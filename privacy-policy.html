@@ -14,6 +14,23 @@
       line-height: 1.6;
     }
 
+    .max-width {
+      max-width: 1000px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+    .button {
+      background-color: black;
+      padding: 1rem;
+      border-radius: 8px;
+      color: white;
+      text-align: center;
+      max-width: 200px;
+    }
+
+
     header {
       display: flex;
       justify-content: space-between;
@@ -68,7 +85,13 @@
       gap: 2rem;
       background-color: #e4ded4;
       width: 100%;
-      padding: 3rem 2rem;
+      padding: 3rem 0;
+    }
+
+    .text {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .hero .text {
@@ -91,6 +114,15 @@
       object-fit: cover;
     }
 
+    .final-cta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #f0f0f0;
+      padding: 3rem 3rem;
+      border-radius: 12px;
+    }
+
     figcaption {
       font-size: 0.85rem;
       color: #555;
@@ -98,7 +130,7 @@
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1000px;
       margin: auto;
       padding: 2rem 1rem;
     }
@@ -142,14 +174,16 @@
 
   <!-- Hero Section -->
   <div class="hero">
-    <div class="text">
-      Ahfy is committed to keeping your data safe !
-    </div>
-    <div class="image">
-      <figure>
-        <img src="https://pftyuawncgpmjstfvnjx.supabase.co/storage/v1/object/public/main/ahfy_mascott/ahfy_curious_ipad.png" alt="Ahfy the fox ensuring privacy" />
-        
-      </figure>
+    <div class="max-width">
+      <div class="text">
+        Ahfy is committed to keeping your data safe !
+      </div>
+      <div class="image">
+        <figure>
+          <img src="https://pftyuawncgpmjstfvnjx.supabase.co/storage/v1/object/public/main/ahfy_mascott/ahfy_curious_ipad.png" alt="Ahfy the fox ensuring privacy" />
+          
+        </figure>
+      </div>
     </div>
   </div>
 

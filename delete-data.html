@@ -19,7 +19,17 @@
       align-items: center;
       padding: 1rem 2rem;
     }
+    header .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
 
+    header .logo img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
     .logo {
       font-weight: 600;
     }
@@ -80,9 +90,12 @@
 
   <!-- Header -->
   <header>
-    <div class="logo">ahfy</div>
+    <div class="logo">
+      <img src="https://pftyuawncgpmjstfvnjx.supabase.co/storage/v1/object/public/main/assets/app_icon%20Small.png" alt="Ahfy Logo" style="border-radius: 12px;"/>
+      <strong>ahfy</strong>
+    </div>
     <nav>
-      <a href="index.html">About</a>
+      <a href="index.html">Home</a>
       <a href="privacy-policy.html">Privacy Policy</a>
     </nav>
   </header>

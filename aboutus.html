@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us – Ahfy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #FAF8F7;
+      color: #1a1a1a;
+      line-height: 1.6;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Background decorative images */
+    body::before,
+    body::after,
+    .bg-decoration {
+      content: '';
+      position: fixed;
+      background-image: url('https://pftyuawncgpmjstfvnjx.supabase.co/storage/v1/object/public/main/background/DEGRADE%20ROSE.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      opacity: 0.6;
+      z-index: -1;
+      animation: pulsate 5s ease-in-out infinite;
+    }
+
+    @keyframes pulsate {
+      0% {
+        transform: scale(0.5);
+      }
+      40% {
+        transform: scale(1.5);
+      }
+      50% {
+        transform: scale(1.5);
+      }
+      90% {
+        transform: scale(0.5);
+      }
+      100% {
+        transform: scale(0.5);
+      }
+    }
+
+    body::before {
+      top: 50px;
+      left: -100px;
+      width: 300px;
+      height: 300px;
+    }
+
+    body::after {
+      top: 50%;
+      transform: translateY(-50%);
+      right: -100px;
+      width: 250px;
+      height: 250px;
+    }
+
+    .bg-decoration {
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 200px;
+      transform-origin: center;
+      animation: pulsate 6.4s ease-in-out infinite;
+      animation-delay: -0.4s;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .logo img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      border-radius: 12px;
+    }
+
+    nav a {
+      margin-left: 1.5rem;
+      text-decoration: none;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .about-container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 2rem 4rem 2rem;
+    }
+
+    .hero-section {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .hero-section h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #1a1a1a;
+    }
+
+    .hero-section .subtitle {
+      font-size: 1.2rem;
+      color: #666;
+      margin-bottom: 2rem;
+    }
+
+    .content-section {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 3rem;
+      margin-bottom: 3rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .content-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      color: #1a1a1a;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .content-section h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #FF9052;
+    }
+
+    .content-section p {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+
+    .content-section ul {
+      margin: 1.5rem 0;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .content-section li {
+      padding: 0.5rem 0;
+      font-size: 1.1rem;
+      color: #333;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .content-section li::before {
+      content: '🌟';
+      flex-shrink: 0;
+      font-size: 1.2rem;
+    }
+
+    .highlight {
+      background: linear-gradient(120deg, rgba(255, 144, 82, 0.2) 0%, rgba(255, 144, 82, 0.1) 100%);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .fox-section {
+      background: linear-gradient(135deg, rgba(255, 144, 82, 0.1), rgba(255, 255, 255, 0.8));
+      border: 2px solid rgba(255, 144, 82, 0.3);
+    }
+
+    .mission-section {
+      background: linear-gradient(135deg, rgba(255, 144, 82, 0.05), rgba(255, 255, 255, 0.9));
+      text-align: center;
+    }
+
+    .divider {
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, #FF9052, #ff7a2e);
+      margin: 2rem auto;
+      border-radius: 2px;
+    }
+
+    .emoji {
+      font-size: 1.5rem;
+      margin-right: 0.5rem;
+    }
+
+    .footer {
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      margin-top: 4rem;
+      padding: 2rem 0;
+    }
+
+    .footer-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      text-decoration: none;
+      color: #666;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: #FF9052;
+    }
+
+    .footer-copyright {
+      color: #888;
+      font-size: 0.9rem;
+    }
+
+    .footer-copyright p {
+      margin: 0;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav {
+        margin-top: 0.5rem;
+      }
+
+      .hero-section h1 {
+        font-size: 2.2rem;
+      }
+
+      .content-section {
+        padding: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .content-section h2 {
+        font-size: 1.6rem;
+      }
+
+      .about-container {
+        padding: 0 1rem 2rem 1rem;
+      }
+
+      .footer-links {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .footer-content {
+        padding: 0 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header / Navigation -->
+  <header>
+    <a href="index.html" class="logo">
+      <img src="https://pftyuawncgpmjstfvnjx.supabase.co/storage/v1/object/public/main/assets/app_icon%20Small.png" alt="Ahfy Logo"/>
+      <strong>ahfy</strong>
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="aboutus.html">About Us</a>
+      <a href="pricing.html">Pricing</a>
+    </nav>
+  </header>
+
+  <!-- About Us Content -->
+  <div class="about-container">
+    
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <h1><span class="emoji">🌿</span>About Us</h1>
+      <p class="subtitle">Meet the team behind your emotional support buddy</p>
+    </div>
+
+    <!-- Meet Ahfy Section -->
+    <div class="content-section">
+      <h2>Meet Ahfy — Always Here For You</h2>
+      <p>We created <span class="highlight">Ahfy</span> with one simple belief: <em>everyone deserves a safe space to feel, understand, and express their emotions.</em></p>
+      
+      <p>Ahfy isn't just an app — it's your <span class="highlight">emotional support buddy</span>, embodied by a gentle fox named <strong>Ahfy</strong>, who guides you through moments of overwhelm, confusion, or emotional disconnection.</p>
+      
+      <p>Designed with the help of <span class="highlight">licensed therapists</span>, Ahfy combines the science of emotional regulation with the warmth of genuine human understanding.</p>
+    </div>
+
+    <!-- What Ahfy Does Section -->
+    <div class="content-section">
+      <h2><span class="emoji">🧠</span>What Ahfy Does</h2>
+      <p>Ahfy helps you:</p>
+      
+      <ul>
+        <li>Identify: what you're feeling and why.</li>
+        <li>Understand: the underlying need or trigger behind the emotion.</li>
+        <li>Regulate: your emotions through tailored exercises — from guided journaling and somatic releases to mindfulness and breathing techniques.</li>
+      </ul>
+      
+      <p>Each journey with Ahfy is personalized. When you tell Ahfy what's going on, the app gently guides you toward therapist-approved exercises that help you <em>process</em> instead of suppress.</p>
+    </div>
+
+    <!-- Why We Built Ahfy Section -->
+    <div class="content-section">
+      <h2><span class="emoji">🌱</span>Why We Built Ahfy</h2>
+      <p>In a world where mental health often feels complicated or clinical, we wanted to create something that feels <span class="highlight">safe, simple, and kind</span> — a companion that meets you where you are.</p>
+      
+      <p>Ahfy was born from the intersection of <strong>psychology, technology, and empathy</strong> — to make emotional wellness <span class="highlight">accessible to everyone</span>, not just those in therapy rooms.</p>
+    </div>
+
+    <!-- Meet Ahfy the Fox Section -->
+    <div class="content-section fox-section">
+      <h2><span class="emoji">🦊</span>Meet Ahfy the Fox</h2>
+      <p>Ahfy, your fox companion, represents curiosity, wisdom, and gentleness. He's there to guide you through each emotional journey, offering exercises, reflections, and encouragement — like a loyal friend who always listens without judgment.</p>
+    </div>
+
+    <!-- Mission Section -->
+    <div class="content-section mission-section">
+      <h2><span class="emoji">💛</span>Our Mission</h2>
+      <p>To help people of all ages <span class="highlight">understand, express, and regulate their emotions</span>, building resilience and healthier relationships with themselves and others.</p>
+      
+      <div class="divider"></div>
+      
+      <p><strong>We believe emotional awareness isn't just a skill — it's a superpower.</strong></p>
+    </div>
+
+    <!-- What You'll Find Section -->
+    <div class="content-section">
+      <h2><span class="emoji">✨</span>What You'll Find Inside Ahfy</h2>
+      
+      <ul>
+        <li><strong>Emotional check-ins:</strong> that help you name what you feel.</li>
+        <li><strong>Personalized exercises:</strong> crafted by therapists — including somatic practices, journaling prompts, and guided meditations.</li>
+        <li><strong>Self-help resources:</strong> on non-violent communication, setting boundaries, identifying toxic dynamics, and building new habits.</li>
+      </ul>
+    </div>
+
+    <!-- Join the Ahfy World Section -->
+    <div class="content-section">
+      <h2><span class="emoji">💬</span>Join the Ahfy World</h2>
+      <p>Ahfy is growing into a larger <strong>emotional wellbeing universe</strong>, built for schools, families, and individuals — a world where emotional education is as natural as learning to read.</p>
+      
+      <p><em>Together, we're creating a culture where it's okay to feel — and better to heal.</em></p>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms-condition.html">Terms & Conditions</a>
+        <a href="mailto:support@ahfy.com">Contact Us</a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2025 Ahfy. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Background decoration element -->
+  <div class="bg-decoration"></div>
+
+</body>
+</html>

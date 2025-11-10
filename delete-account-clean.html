@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Delete My Account - Ahfy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #fff;
+      color: #1a1a1a;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+    }
+    header .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    header .logo img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+    .logo {
+      font-weight: 600;
+    }
+
+    nav a {
+      margin-left: 1.5rem;
+      text-decoration: none;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 4rem auto;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin-bottom: 2rem;
+      color: #333;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: #1a1a1a;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+
+    .footer {
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      margin-top: 4rem;
+      padding: 2rem 0;
+    }
+
+    .footer-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      text-decoration: none;
+      color: #666;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: #FF9052;
+    }
+
+    .footer-copyright {
+      color: #888;
+      font-size: 0.9rem;
+    }
+
+    .footer-copyright p {
+      margin: 0;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav {
+        margin-top: 0.5rem;
+      }
+
+      .footer-links {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .footer-content {
+        padding: 0 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="logo" style="text-decoration: none; color: inherit;">
+      <img src="https://pftyuawncgpmjstfvnjx.supabase.co/storage/v1/object/public/main/assets/app_icon%20Small.png" alt="Ahfy Logo" style="border-radius: 12px;"/>
+      <strong>ahfy</strong>
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="aboutus.html">About Us</a>
+      <a href="pricing.html">Pricing</a>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <h1>Request Account Deletion</h1>
+    <p>If you'd like to permanently delete your account and all associated data, click the button below.</p>
+
+    <!-- Mailto fallback -->
+    <form id="delete-form">
+      <input type="email" id="email" placeholder="email used for your ahfy account" required/>
+      <textarea id="reason" placeholder="Tell us why you're deleting your account?(optional)"></textarea>
+      <button class="button" type="submit">Delete my account</button>
+      <p id="status" style="margin-top:1rem; color: #666;"></p>
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms-condition.html">Terms & Conditions</a>
+        <a href="mailto:support@ahfy.com">Contact Us</a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2025 Ahfy. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+<script action="javascript:void(0)">
+  const Function_URL = "https://dkmthdkrrdcctzxcpxsz.supabase.co/functions/v1/delete-account"
+  const params= new URLSearchParams(window.location.search);
+  const defaultEmail = params.get('email');
+  if(defaultEmail){
+    document.getElementById('email').value = defaultEmail;
+  }
+  
+    document.getElementById("delete-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const status = document.getElementById("status");
+    const userId = params.get("user_id");
+
+    if (!userId) {
+      status.textContent = "Missing account information. Please open this page from inside the app.";
+      status.style.color = "#d14343";
+      return;
+    }
+
+    status.textContent = "Processing your request…";
+    status.style.color = "#666";
+
+    try {
+      const response = await fetch(Function_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: userId,
+          email: document.getElementById("email").value,
+          reason: document.getElementById("reason").value,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      status.textContent = "Account deletion submitted. Check your email for confirmation.";
+      status.style.color = "#006400";
+    } catch (error) {
+      status.textContent = `Unable to delete account: ${error.message}`;
+      status.style.color = "#d14343";
+    }
+  });
+
+</script>
+</body>
+</html>

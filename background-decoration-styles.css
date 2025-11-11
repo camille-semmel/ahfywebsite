@@ -1,0 +1,46 @@
+/* Background decorative images */
+body::before,
+body::after,
+.bg-decoration {
+    content: '';
+    position: absolute;
+    background-image: url('https://pftyuawncgpmjstfvnjx.supabase.co/storage/v1/object/public/main/background/DEGRADE%20ROSE.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.6;
+    z-index: -1;
+    animation: pulsate 5s ease-in-out infinite;
+}
+
+body::before {
+    top: 50px;
+    left: -100px;
+    width: 300px;
+    height: 300px;
+}
+
+body::after {
+    top: 100px;
+    right: -100px;
+    width: 250px;
+    height: 250px;
+}
+
+.bg-decoration {
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 200px;
+    transform-origin: center;
+    animation: pulsate 6.4s ease-in-out infinite;
+    animation-delay: -0.4s;
+}
+
+@media (max-width: 768px) {
+    body::before,
+    body::after,
+    .bg-decoration {
+        display: none;
+    }
+}

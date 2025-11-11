@@ -5,42 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ahfy – Emotional Support Buddy</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
   <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background-color: #FAF8F7;
-      color: #1a1a1a;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-    }
-    header .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    header .logo img {
-      width: 32px;
-      height: 32px;
-      object-fit: contain;
-    }
-    .logo {
-      font-weight: 600;
-    }
-
-    nav a {
-      margin-left: 1.5rem;
-      text-decoration: none;
-      font-weight: 600;
-      color: #1a1a1a;
-    }
-
     .hero {
       text-align: center;
       padding: 4rem 1rem;
@@ -119,54 +85,6 @@
       color: #333;
     }
 
-    .button-group {
-      display: flex;
-      gap: 1rem;
-    }
-
-    .button {
-      background-color: #FF9052;
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      text-align: center;
-    }
-
-    @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      nav {
-        margin-top: 0.5rem;
-      }
-
-      .container {
-        width: 90%;
-        height: auto;
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .container.reverse {
-        flex-direction: column;
-        text-align: center;
-
-      }
-
-      .container-content {
-        padding: 1rem 0;
-      }
-
-      .button-group {
-        flex-direction: column;
-        align-items: center;
-      }
-    }
-
     .carousel-section {
       text-align: center;
       padding: 3rem 2rem;
@@ -214,26 +132,6 @@
       filter: grayscale(0%);
       opacity: 1;
     }
-
-    @keyframes scroll {
-      0% {
-        transform: translateX(0);
-      }
-      100% {
-        transform: translateX(-50%);
-      }
-    }
-
-    @media (max-width: 768px) {
-      .carousel-track {
-        gap: 2rem;
-      }
-
-      .carousel-item img {
-        max-width: 120px;
-        max-height: 50px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -260,8 +158,12 @@
       <h2>UNDERSTAND YOUR EMOTIONS, REGULATE THEM, BECOME BETTER</h2>
       <p>Ahfy is your emotional support buddy - designed with therapists to help you find calm, clarity, and balance - Ahfy (Always Here For You)</p>
       <div class="button-group">
-        <a href="https://testflight.apple.com/join/vRd5t9Mg" class="button">Test on iPhone</a>
-        <a href="https://adelaideuniwide.qualtrics.com/jfe/form/SV_5uu77m0z2eAMFIW" class="button">Register for Android</a>
+        <a class="filled" href="https://testflight.apple.com/join/vRd5t9Mg">
+            Test on iPhone
+        </a>
+        <a class="filled" href="https://testflight.apple.com/join/vRd5t9Mg">
+            Register for Android
+        </a>
       </div>
     </div>
   </div>
@@ -315,8 +217,13 @@
   <!-- Second Container -->
   <div class="container" style="flex-direction: column; text-align: center; height: auto; min-height: 500px;">
     <div style="margin-bottom: 2rem;">
-      <h2 style="color: #FF9052;">HOW DOES IT WORK?</h2>
-      <p>The goal of Ahfy is that you finally get advice on how to deal with day to day emotions and get certified advice.</p>
+      <h2 class="branded-text">
+        HOW DOES IT WORK?
+      </h2>
+      <p>
+        The goal of Ahfy is that you finally get advice on how to deal with day to day
+        emotions and get certified advice.
+      </p>
     </div>
     <div>
       <img src="https://pftyuawncgpmjstfvnjx.supabase.co/storage/v1/object/public/main/website_illustration/usage%202.png" alt="How Ahfy works" style="max-width: 80%;" />

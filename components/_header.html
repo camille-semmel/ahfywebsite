@@ -1,0 +1,45 @@
+<template id="header">
+  <header>
+    <a href="index.html" class="logo" style="text-decoration: none; color: inherit;">
+      <img src="https://pftyuawncgpmjstfvnjx.supabase.co/storage/v1/object/public/main/assets/app_icon%20Small.png"
+           alt="Ahfy Logo" style="border-radius: 12px;" />
+      <strong>ahfy</strong>
+    </a>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about-us.html">About Us</a>
+      <a href="pricing.html">Pricing</a>
+    </nav>
+  </header>
+
+  <style>
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+    }
+    header .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    header .logo img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+    .logo {
+      font-weight: 600;
+    }
+
+    nav a {
+      margin-left: 1.5rem;
+      text-decoration: none;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+  </style>
+</template>

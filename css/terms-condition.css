@@ -121,9 +121,9 @@ figcaption {
 }
 
 .container {
-  max-width: 1000px;
+  max-width: 900px;
   margin: auto;
-  padding: 2rem 1rem;
+  padding: 0 2rem 2rem 2rem;
 }
 
 ul {
@@ -132,6 +132,49 @@ ul {
 
 ul li {
   margin-bottom: 0.5rem;
+}
+
+.footer {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 4rem;
+  padding: 2rem 0;
+}
+
+.footer-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  text-align: center;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  text-decoration: none;
+  color: #666;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #ff9052;
+}
+
+.footer-copyright {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.footer-copyright p {
+  margin: 0;
 }
 
 @media (max-width: 768px) {

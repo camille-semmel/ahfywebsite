@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => ({
     outDir: "../dashboard-app",
     emptyOutDir: true,
   },
-  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+  plugins: [react(), mode === "development" && componentTagger()].filter(
     Boolean
   ),
   resolve: {

@@ -1,0 +1,10 @@
+project_id = "dkmthdkrrdcctzxcpxsz"
+
+[functions.send-seat-request]
+verify_jwt = true
+
+[functions.send-form-email]
+verify_jwt = false
+
+[functions.send-team-invitation]
+verify_jwt = false

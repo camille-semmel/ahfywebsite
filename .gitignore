@@ -1,5 +1,5 @@
 # Build output from Dashboard React app
-/dashboard/
+/dashboard-app/
 
 # Dependencies
 node_modules/

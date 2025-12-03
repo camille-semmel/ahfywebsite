@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Base colors */
+    --background: 0 0% 98%;
+    --foreground: 220 15% 20%;
+
+    /* Card styling */
+    --card: 0 0% 100%;
+    --card-foreground: 220 15% 20%;
+
+    /* Popover */
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 20%;
+
+    /* Primary - vibrant orange for CTAs */
+    --primary: 22 100% 66%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 22 100% 60%;
+
+    /* Secondary - softer gray for cards */
+    --secondary: 210 15% 88%;
+    --secondary-foreground: 220 15% 25%;
+
+    /* Muted - for subtle elements */
+    --muted: 210 15% 92%;
+    --muted-foreground: 220 10% 45%;
+
+    /* Accent - for highlights and active states */
+    --accent: 22 95% 65%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Destructive */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders and inputs */
+    --border: 210 15% 88%;
+    --input: 210 15% 90%;
+    --ring: 22 100% 66%;
+
+    /* Border radius */
+    --radius: 1rem;
+    --radius-card: 1.5rem;
+
+    /* Sidebar specific */
+    --sidebar-background: 0 0% 95%;
+    --sidebar-foreground: 220 15% 25%;
+    --sidebar-primary: 22 100% 66%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 15% 90%;
+    --sidebar-accent-foreground: 220 15% 25%;
+    --sidebar-border: 210 15% 88%;
+    --sidebar-ring: 22 100% 66%;
+
+    /* Chart colors */
+    --chart-primary: 22 100% 66%;
+    --chart-secondary: 210 100% 60%;
+    --chart-accent: 280 70% 60%;
+    --chart-neutral: 210 15% 70%;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Print styles for PDF reports */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  table {
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  @page {
+    margin: 2cm;
+  }
+}

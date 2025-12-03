@@ -1,0 +1,17 @@
+# Build output from Dashboard React app
+/dashboard-app/
+
+# Dependencies
+node_modules/
+
+# Build files
+dist/
+*.local
+
+# Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,500 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ahfy – Pricing Plans</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background-color: #FAF8F7;
-      color: #1a1a1a;
-      position: relative;
-      overflow-x: hidden;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ahfy – Pricing Plans</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/pricing.css" />
+  </head>
+  <body>
+    <div class="bg-decoration"></div>
 
-    /* Background decorative images */
-    body::before,
-    body::after,
-    .bg-decoration {
-      content: '';
-      position: absolute;
-      background-image: url('https://pftyuawncgpmjstfvnjx.supabase.co/storage/v1/object/public/main/background/DEGRADE%20ROSE.png');
-      background-size: contain;
-      background-repeat: no-repeat;
-      opacity: 0.6;
-      z-index: -1;
-      animation: pulsate 5s ease-in-out infinite;
-    }
-
-
-    .footer {
-      background: rgba(255, 255, 255, 0.4);
-      backdrop-filter: blur(10px);
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
-      margin-top: 4rem;
-      padding: 2rem 0;
-    }
-
-    .footer-content {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 2rem;
-      text-align: center;
-    }
-
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .footer-links a {
-      text-decoration: none;
-      color: #666;
-      font-weight: 500;
-      transition: color 0.3s ease;
-    }
-
-    .footer-links a:hover {
-      color: #FF9052;
-    }
-
-    .footer-copyright {
-      color: #888;
-      font-size: 0.9rem;
-    }
-
-    .footer-copyright p {
-      margin: 0;
-    }
-
-
-    @keyframes pulsate {
-      0% {
-        transform: scale(0.5);
-      }
-      40% {
-        transform: scale(1.5);
-      }
-      50% {
-        transform: scale(1.5);
-      }
-      90% {
-        transform: scale(0.5);
-      }
-      100% {
-        transform: scale(0.5);
-      }
-    }
-
-    body::before {
-      top: 50px;
-      left: -100px;
-      width: 300px;
-      height: 300px;
-    }
-
-    body::after {
-      top: 100px;
-      right: -100px;
-      width: 250px;
-      height: 250px;
-    }
-
-    .bg-decoration {
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 200px;
-      height: 200px;
-      transform-origin: center;
-      animation: pulsate 6.4s ease-in-out infinite;
-      animation-delay: -0.4s;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      position: relative;
-      z-index: 10;
-    }
-
-    .logo {
-      font-weight: 600;
-    }
-
-    nav a {
-      margin-left: 1.5rem;
-      text-decoration: none;
-      font-weight: 600;
-      color: #1a1a1a;
-    }
-
-    .pricing-container {
-      max-width: 1200px;
-      margin: 4rem auto;
-      padding: 0 2rem;
-      position: relative;
-      z-index: 5;
-    }
-
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-      align-items: start;
-    }
-
-    .pricing-card {
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(10px);
-      border-radius: 24px;
-      padding: 2rem;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      position: relative;
-    }
-
-    .pricing-card.popular {
-      background: linear-gradient(135deg, rgba(255, 144, 82, 0.1), rgba(255, 255, 255, 0.9));
-      border: 2px solid #FF9052;
-      transform: scale(1.05);
-    }
-
-    .plan-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-      color: #1a1a1a;
-    }
-
-    .plan-price {
-      font-size: 2.5rem;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin-bottom: 0.5rem;
-    }
-
-    .plan-price .currency {
-      font-size: 1.2rem;
-      vertical-align: top;
-    }
-
-    .plan-price .period {
-      font-size: 1rem;
-      font-weight: 400;
-      color: #666;
-    }
-
-    .plan-description {
-      color: #666;
-      margin-bottom: 2rem;
-      line-height: 1.5;
-    }
-
-    .features-list {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 2rem 0;
-    }
-
-    .features-list li {
-      padding: 0.5rem 0;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .feature-check {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-      flex-shrink: 0;
-    }
-
-    .feature-included .feature-check {
-      background-color: #4CAF50;
-      color: white;
-    }
-
-    .feature-excluded .feature-check {
-      background-color: #f5f5f5;
-      color: #999;
-    }
-
-    .feature-included .feature-check::before {
-      content: '✓';
-    }
-
-    .feature-excluded .feature-check::before {
-      content: '✕';
-    }
-
-    .cta-button {
-      width: 100%;
-      background-color: #FF9052;
-      color: white;
-      border: none;
-      padding: 1rem 2rem;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      text-decoration: none;
-      display: block;
-      text-align: center;
-      transition: background-color 0.3s ease;
-      box-sizing: border-box;
-    }
-
-    .cta-button:hover {
-      background-color: #e8804a;
-    }
-
-    .pricing-card.popular .cta-button {
-      background-color: #1a1a1a;
-    }
-
-    .pricing-card.popular .cta-button:hover {
-      background-color: #333;
-    }
-
-    @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      nav {
-        margin-top: 0.5rem;
-      }
-
-      .pricing-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .pricing-card.popular {
-        transform: none;
-      }
-
-      body::before,
-      body::after,
-      .bg-decoration {
-        display: none;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="bg-decoration"></div>
-
-  <!-- Header / Navigation -->
-  <header>
-    <a class="logo" href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 0.5rem;">
-        <img src="https://pftyuawncgpmjstfvnjx.supabase.co/storage/v1/object/public/main/assets/app_icon%20Small.png" alt="Ahfy Logo" style="border-radius: 12px; width: 32px; height: 32px;"/>
+    <!-- Header / Navigation -->
+    <header>
+      <a
+        class="logo"
+        href="index.html"
+        style="
+          text-decoration: none;
+          color: inherit;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        "
+      >
+        <img
+          src="https://pftyuawncgpmjstfvnjx.supabase.co/storage/v1/object/public/main/assets/app_icon%20Small.png"
+          alt="Ahfy Logo"
+          style="border-radius: 12px; width: 32px; height: 32px"
+        />
         <strong>ahfy</strong>
-    </a>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="about-us.html">About Us</a>
-      <a href="pricing.html">Pricing</a>
-    </nav>
-  </header>
+      </a>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="about-us.html">About Us</a>
+        <a href="pricing.html">Pricing</a>
+      </nav>
+    </header>
 
-  <!-- Pricing Section -->
-  <div class="pricing-container">
-    <div class="pricing-grid">
+    <!-- Pricing Section -->
+    <div class="pricing-container">
+      <div class="pricing-grid">
+        <!-- Free Plan -->
+        <div class="pricing-card">
+          <h2 class="plan-name">Free Plan</h2>
+          <div class="plan-price">
+            <span class="currency">$AUD</span> 0<span class="period"
+              >/month</span
+            >
+          </div>
+          <p class="plan-description">
+            Start developing an emotional regulation skillset today
+          </p>
 
-      <!-- Free Plan -->
-      <div class="pricing-card">
-        <h2 class="plan-name">Free Plan</h2>
-        <div class="plan-price">
-          <span class="currency">$AUD</span> 0<span class="period">/month</span>
+          <ul class="features-list">
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>1 user</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Emotion Identification Tool</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Emotion Regulation Tool</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Resources</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Crisis Meditations</span>
+            </li>
+            <li class="feature-excluded">
+              <span class="feature-check"></span>
+              <span>Therapist Approved Exercises</span>
+            </li>
+            <li class="feature-excluded">
+              <span class="feature-check"></span>
+              <span>Mindfulness Exercises</span>
+            </li>
+            <li class="feature-excluded">
+              <span class="feature-check"></span>
+              <span>AI Chat</span>
+            </li>
+            <li class="feature-excluded">
+              <span class="feature-check"></span>
+              <span>Monthly Analytics</span>
+            </li>
+            <li class="feature-excluded">
+              <span class="feature-check"></span>
+              <span>Programms</span>
+            </li>
+          </ul>
+
+          <a
+            href="https://adelaideuniwide.qualtrics.com/jfe/form/SV_5uu77m0z2eAMFIW"
+            class="cta-button"
+            >Get Started Free</a
+          >
         </div>
-        <p class="plan-description">Start developing an emotional regulation skillset today</p>
 
-        <ul class="features-list">
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>1 user</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Emotion Identification Tool</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Emotion Regulation Tool</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Resources</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Crisis Meditations</span>
-          </li>
-          <li class="feature-excluded">
-            <span class="feature-check"></span>
-            <span>Therapist Approved Exercises</span>
-          </li>
-          <li class="feature-excluded">
-            <span class="feature-check"></span>
-            <span>Mindfulness Exercises</span>
-          </li>
-          <li class="feature-excluded">
-            <span class="feature-check"></span>
-            <span>AI Chat</span>
-          </li>
-          <li class="feature-excluded">
-            <span class="feature-check"></span>
-            <span>Monthly Analytics</span>
-          </li>
-          <li class="feature-excluded">
-            <span class="feature-check"></span>
-            <span>Programms</span>
-          </li>
-        </ul>
+        <!-- Basic Plan -->
+        <div class="pricing-card popular">
+          <h2 class="plan-name">Basic Plan</h2>
+          <div class="plan-price">
+            <span class="currency">$AUD</span> 9.99<span class="period"
+              >/month</span
+            >
+          </div>
+          <p class="plan-description">
+            Start developing an emotional regulation skillset today
+          </p>
 
-        <a href="https://adelaideuniwide.qualtrics.com/jfe/form/SV_5uu77m0z2eAMFIW" class="cta-button">Get Started Free</a>
-      </div>
+          <ul class="features-list">
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>1 user</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Emotion Identification Tool</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Emotion Regulation Tool</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Resources</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Crisis Meditations</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Therapist Approved Exercises</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Mindfulness Exercises</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>AI Chat</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Monthly Analytics</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Programms</span>
+            </li>
+          </ul>
 
-      <!-- Basic Plan -->
-      <div class="pricing-card popular">
-        <h2 class="plan-name">Basic Plan</h2>
-        <div class="plan-price">
-          <span class="currency">$AUD</span> 9.99<span class="period">/month</span>
+          <a
+            href="https://adelaideuniwide.qualtrics.com/jfe/form/SV_5uu77m0z2eAMFIW"
+            class="cta-button"
+            >Choose Basic Plan</a
+          >
         </div>
-        <p class="plan-description">Start developing an emotional regulation skillset today</p>
 
-        <ul class="features-list">
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>1 user</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Emotion Identification Tool</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Emotion Regulation Tool</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Resources</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Crisis Meditations</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Therapist Approved Exercises</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Mindfulness Exercises</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>AI Chat</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Monthly Analytics</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Programms</span>
-          </li>
-        </ul>
+        <!-- Family Plan -->
+        <div class="pricing-card">
+          <h2 class="plan-name">Family Plan</h2>
+          <div class="plan-price">
+            <span class="currency">$AUD</span> 19.99<span class="period"
+              >/month</span
+            >
+          </div>
+          <p class="plan-description">
+            Start developing an emotional regulation skillset today
+          </p>
 
-        <a href="https://adelaideuniwide.qualtrics.com/jfe/form/SV_5uu77m0z2eAMFIW" class="cta-button">Choose Basic Plan</a>
-      </div>
+          <ul class="features-list">
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>3 users</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Emotion Identification Tool</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Emotion Regulation Tool</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Resources</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Crisis Meditations</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Therapist Approved Exercises</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Mindfulness Exercises</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>AI Chat</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Monthly Analytics</span>
+            </li>
+            <li class="feature-included">
+              <span class="feature-check"></span>
+              <span>Programms</span>
+            </li>
+          </ul>
 
-      <!-- Family Plan -->
-      <div class="pricing-card">
-        <h2 class="plan-name">Family Plan</h2>
-        <div class="plan-price">
-          <span class="currency">$AUD</span> 19.99<span class="period">/month</span>
+          <a
+            href="https://adelaideuniwide.qualtrics.com/jfe/form/SV_5uu77m0z2eAMFIW"
+            class="cta-button"
+            >Choose Family Plan</a
+          >
         </div>
-        <p class="plan-description">Start developing an emotional regulation skillset today</p>
-
-        <ul class="features-list">
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>3 users</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Emotion Identification Tool</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Emotion Regulation Tool</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Resources</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Crisis Meditations</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Therapist Approved Exercises</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Mindfulness Exercises</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>AI Chat</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Monthly Analytics</span>
-          </li>
-          <li class="feature-included">
-            <span class="feature-check"></span>
-            <span>Programms</span>
-          </li>
-        </ul>
-
-        <a href="https://adelaideuniwide.qualtrics.com/jfe/form/SV_5uu77m0z2eAMFIW" class="cta-button">Choose Family Plan</a>
       </div>
-
     </div>
-  </div>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-links">
-        <a href="privacy-policy.html">Privacy Policy</a>
-        <a href="terms-condition.html">Terms & Conditions</a>
-        <a href="mailto:support@ahfy.com">Contact Us</a>
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="privacy-policy.html">Privacy Policy</a>
+          <a href="terms-condition.html">Terms & Conditions</a>
+          <a href="mailto:support@ahfy.com">Contact Us</a>
+        </div>
+        <div class="footer-copyright">
+          <p>&copy; 2025 Ahfy. All rights reserved.</p>
+        </div>
       </div>
-      <div class="footer-copyright">
-        <p>&copy; 2025 Ahfy. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
-
-
-</body>
+    </footer>
+  </body>
 </html>

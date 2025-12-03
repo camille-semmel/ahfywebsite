@@ -1,0 +1,269 @@
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background-color: #faf8f7;
+  color: #1a1a1a;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+}
+header .logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+header .logo img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.logo {
+  font-weight: 600;
+}
+
+nav a {
+  margin-left: 1.5rem;
+  text-decoration: none;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.hero {
+  text-align: center;
+  padding: 4rem 1rem;
+  max-width: 700px;
+  margin: auto;
+}
+
+.hero h1 {
+  font-family: "Playfair Display", serif;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.hero .button {
+  background-color: #1a1a1a;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.container {
+  width: 75%;
+  height: 500px;
+  background-color: rgba(217, 217, 217, 0.2);
+  border: 2px solid #ffffff;
+  border-radius: 45px;
+  margin: 75px auto;
+  display: flex;
+  align-items: center;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.container.reverse {
+  flex-direction: row-reverse;
+}
+
+.container-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container-image img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 20px;
+  object-fit: cover;
+}
+
+.container-content {
+  flex: 1;
+  padding: 0 2rem;
+}
+
+.container-content h2 {
+  font-family: "Playfair Display", serif;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #1a1a1a;
+}
+
+.container-content p {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+}
+
+.button {
+  background-color: #ff9052;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  text-align: center;
+}
+
+.footer {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 4rem;
+  padding: 2rem 0;
+}
+
+.footer-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  text-align: center;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  text-decoration: none;
+  color: #666;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #ff9052;
+}
+
+.footer-copyright {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.footer-copyright p {
+  margin: 0;
+}
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  nav {
+    margin-top: 0.5rem;
+  }
+
+  .container {
+    width: 90%;
+    height: auto;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .container.reverse {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .container-content {
+    padding: 1rem 0;
+  }
+
+  .button-group {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.carousel-section {
+  text-align: center;
+  padding: 3rem 2rem;
+  margin: 75px 0;
+}
+
+.carousel-title {
+  font-family: "Playfair Display", serif;
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  color: #1a1a1a;
+}
+
+.carousel-container {
+  overflow: hidden;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.carousel-track {
+  display: flex;
+  animation: scroll 20s linear infinite;
+  gap: 3rem;
+}
+
+.carousel-item {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+}
+
+.carousel-item img {
+  max-height: 60px;
+  max-width: 150px;
+  object-fit: contain;
+  filter: grayscale(100%);
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.carousel-item img:hover {
+  filter: grayscale(0%);
+  opacity: 1;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel-track {
+    gap: 2rem;
+  }
+
+  .carousel-item img {
+    max-width: 120px;
+    max-height: 50px;
+  }
+}

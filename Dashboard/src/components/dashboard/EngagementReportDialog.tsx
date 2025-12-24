@@ -1,21 +1,43 @@
 import { useState, useEffect } from "react";
 import { Download, Printer, Loader2 } from "lucide-react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { generateEngagementPDF, EngagementReportData } from "@/lib/pdf/engagementPdf";
+import {
+  generateEngagementPDF,
+  EngagementReportData,
+} from "@/lib/pdf/engagementPdf";
 
 interface EngagementReportDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-const EngagementReportDialog = ({ open, onOpenChange }: EngagementReportDialogProps) => {
+const EngagementReportDialog = ({
+  open,
+  onOpenChange,
+}: EngagementReportDialogProps) => {
   const [loading, setLoading] = useState(false);
-  const [reportData, setReportData] = useState<EngagementReportData | null>(null);
+  const [reportData, setReportData] = useState<EngagementReportData | null>(
+    null
+  );
 
   useEffect(() => {
     if (open) {
@@ -28,28 +50,31 @@ const EngagementReportDialog = ({ open, onOpenChange }: EngagementReportDialogPr
     try {
       // Fetch exercise feedback (therapy sessions)
       const { data: feedbackData, error: feedbackError } = await supabase
-        .from('exercise_feedback')
-        .select('user_id, therapist_exercise_id, mediation_id');
+        .from("public.exercise_feedback")
+        .select("user_id, therapist_exercise_id, mediation_id");
 
       if (feedbackError) throw feedbackError;
 
       // Fetch emotion usage logs (self-assessments)
       const { data: emotionData, error: emotionError } = await supabase
-        .from('emotion_usage_logs')
-        .select('user_id, need_id')
-        .eq('is_deleted', false);
+        .from("public.emotion_usage_logs")
+        .select("user_id, need_id")
+        .eq("is_deleted", false);
 
       if (emotionError) throw emotionError;
 
       // Fetch student data from userspub table
       const { data: studentData, error: studentError } = await supabase
-        .from('userspub')
-        .select('id, first_name, last_name, email, created_at');
+        .from("public.userspub")
+        .select("id, first_name, last_name, email, created_at");
 
       if (studentError) throw studentError;
 
       // Create activity map by user_id
-      const activityMap = new Map<string, { therapy: number; assessments: number; resources: number }>();
+      const activityMap = new Map<
+        string,
+        { therapy: number; assessments: number; resources: number }
+      >();
 
       // Count therapy sessions per user
       feedbackData?.forEach((feedback) => {
@@ -70,21 +95,31 @@ const EngagementReportDialog = ({ open, onOpenChange }: EngagementReportDialogPr
       });
 
       // Build student rows
-      const studentRows = studentData?.map((student) => {
-        const activity = activityMap.get(student.id) || { therapy: 0, assessments: 0, resources: 0 };
-        return {
-          name: `${student.first_name || 'N/A'} ${student.last_name || ''}`.trim(),
-          email: student.email || 'N/A',
-          therapy: activity.therapy,
-          assessments: activity.assessments,
-          resources: activity.therapy + activity.assessments
-        };
-      }) || [];
+      const studentRows =
+        studentData?.map((student) => {
+          const activity = activityMap.get(student.id) || {
+            therapy: 0,
+            assessments: 0,
+            resources: 0,
+          };
+          return {
+            name: `${student.first_name || "N/A"} ${
+              student.last_name || ""
+            }`.trim(),
+            email: student.email || "N/A",
+            therapy: activity.therapy,
+            assessments: activity.assessments,
+            resources: activity.therapy + activity.assessments,
+          };
+        }) || [];
 
       // Calculate totals
       const totalTherapy = feedbackData?.length || 0;
       const totalAssessments = emotionData?.length || 0;
-      const totalResources = studentRows.reduce((sum, row) => sum + row.resources, 0);
+      const totalResources = studentRows.reduce(
+        (sum, row) => sum + row.resources,
+        0
+      );
       const uniqueStudents = studentData?.length || 0;
 
       setReportData({
@@ -92,15 +127,14 @@ const EngagementReportDialog = ({ open, onOpenChange }: EngagementReportDialogPr
         totalAssessments,
         totalResources,
         uniqueStudents,
-        studentRows
+        studentRows,
       });
-
     } catch (error: any) {
-      console.error('Error fetching engagement data:', error);
+      console.error("Error fetching engagement data:", error);
       toast({
         title: "Error",
         description: "Failed to load engagement report data.",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -112,7 +146,7 @@ const EngagementReportDialog = ({ open, onOpenChange }: EngagementReportDialogPr
       generateEngagementPDF(reportData);
       toast({
         title: "PDF Generated",
-        description: "Your engagement report has been downloaded."
+        description: "Your engagement report has been downloaded.",
       });
     }
   };
@@ -127,7 +161,8 @@ const EngagementReportDialog = ({ open, onOpenChange }: EngagementReportDialogPr
         <DialogHeader>
           <DialogTitle>Active Engagements Report</DialogTitle>
           <DialogDescription>
-            Generated on {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}
+            Generated on {new Date().toLocaleDateString()} at{" "}
+            {new Date().toLocaleTimeString()}
           </DialogDescription>
         </DialogHeader>
 
@@ -141,37 +176,53 @@ const EngagementReportDialog = ({ open, onOpenChange }: EngagementReportDialogPr
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">Therapy Sessions</CardTitle>
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    Therapy Sessions
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{reportData.totalTherapy}</div>
+                  <div className="text-2xl font-bold">
+                    {reportData.totalTherapy}
+                  </div>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">Self-Assessments</CardTitle>
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    Self-Assessments
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{reportData.totalAssessments}</div>
+                  <div className="text-2xl font-bold">
+                    {reportData.totalAssessments}
+                  </div>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">Resources Accessed</CardTitle>
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    Resources Accessed
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{reportData.totalResources}</div>
+                  <div className="text-2xl font-bold">
+                    {reportData.totalResources}
+                  </div>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">Unique Students</CardTitle>
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    Unique Students
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{reportData.uniqueStudents}</div>
+                  <div className="text-2xl font-bold">
+                    {reportData.uniqueStudents}
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -187,8 +238,12 @@ const EngagementReportDialog = ({ open, onOpenChange }: EngagementReportDialogPr
                     <TableRow>
                       <TableHead>Student Name</TableHead>
                       <TableHead>Email</TableHead>
-                      <TableHead className="text-right">Therapy Sessions</TableHead>
-                      <TableHead className="text-right">Self-Assessments</TableHead>
+                      <TableHead className="text-right">
+                        Therapy Sessions
+                      </TableHead>
+                      <TableHead className="text-right">
+                        Self-Assessments
+                      </TableHead>
                       <TableHead className="text-right">Resources</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -196,16 +251,27 @@ const EngagementReportDialog = ({ open, onOpenChange }: EngagementReportDialogPr
                     {reportData.studentRows.length > 0 ? (
                       reportData.studentRows.map((row, index) => (
                         <TableRow key={index}>
-                          <TableCell className="font-medium">{row.name}</TableCell>
+                          <TableCell className="font-medium">
+                            {row.name}
+                          </TableCell>
                           <TableCell>{row.email}</TableCell>
-                          <TableCell className="text-right">{row.therapy}</TableCell>
-                          <TableCell className="text-right">{row.assessments}</TableCell>
-                          <TableCell className="text-right">{row.resources}</TableCell>
+                          <TableCell className="text-right">
+                            {row.therapy}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {row.assessments}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {row.resources}
+                          </TableCell>
                         </TableRow>
                       ))
                     ) : (
                       <TableRow>
-                        <TableCell colSpan={5} className="text-center text-muted-foreground">
+                        <TableCell
+                          colSpan={5}
+                          className="text-center text-muted-foreground"
+                        >
                           No student data available
                         </TableCell>
                       </TableRow>

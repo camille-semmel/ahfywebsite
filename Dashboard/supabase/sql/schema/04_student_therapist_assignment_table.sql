@@ -1,41 +1,102 @@
 -- ============================================
+-- Schema Configuration
+-- ============================================
+-- SCHEMA_NAME: demo  <-- CHANGE THIS VALUE, then Find/Replace all 'demo' below
+-- 
+-- TO CHANGE SCHEMA: 
+-- 1. Update SCHEMA_NAME above
+-- 2. Find and replace ALL occurrences of 'demo' with your schema name in this file
+-- ============================================
+
+-- Set search path to the target schema
+SET search_path TO demo, auth;
+
+-- ============================================
 -- Student Therapist Assignment Table
 -- Links students to their assigned therapists
 -- ============================================
 
 -- Create student_therapist_assignment table
-CREATE TABLE public.student_therapist_assignment (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  student_id uuid NOT NULL REFERENCES public.userspub(id) ON DELETE CASCADE,
-  therapist_id uuid NOT NULL REFERENCES public.therapist_team(id) ON DELETE CASCADE,
-  assigned_at timestamp with time zone DEFAULT now(),
-  notes text,
-  UNIQUE(student_id)
-);
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT FROM pg_tables 
+    WHERE schemaname = 'demo' 
+    AND tablename = 'student_therapist_assignment'
+  ) THEN
+    CREATE TABLE demo.student_therapist_assignment (
+      id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+      student_id uuid NOT NULL REFERENCES public.userspub(id) ON DELETE CASCADE,
+      therapist_id uuid NOT NULL REFERENCES demo.therapist_team(id) ON DELETE CASCADE,
+      assigned_at timestamp with time zone DEFAULT now(),
+      notes text,
+      UNIQUE(student_id)
+    );
+    RAISE NOTICE 'Table student_therapist_assignment created successfully.';
+  ELSE
+    RAISE NOTICE 'Table student_therapist_assignment already exists. Skipping creation.';
+  END IF;
+END $$;
 
 -- ============================================
 -- Enable RLS
 -- ============================================
 
-ALTER TABLE public.student_therapist_assignment ENABLE ROW LEVEL SECURITY;
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT FROM pg_tables 
+    WHERE schemaname = 'demo' 
+    AND tablename = 'student_therapist_assignment'
+  ) THEN
+    ALTER TABLE demo.student_therapist_assignment ENABLE ROW LEVEL SECURITY;
+    RAISE NOTICE 'RLS enabled on student_therapist_assignment table.';
+  END IF;
+END $$;
 
 -- ============================================
 -- RLS Policies
 -- ============================================
 
-CREATE POLICY "Allow authenticated users to view assignments"
-ON public.student_therapist_assignment FOR SELECT TO authenticated USING (true);
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies 
+    WHERE schemaname = 'demo' 
+    AND tablename = 'student_therapist_assignment' 
+    AND policyname = 'Allow authenticated users to view assignments'
+  ) THEN
+    CREATE POLICY "Allow authenticated users to view assignments"
+    ON demo.student_therapist_assignment FOR SELECT TO authenticated USING (true);
+    RAISE NOTICE 'Policy "Allow authenticated users to view assignments" created successfully.';
+  ELSE
+    RAISE NOTICE 'Policy "Allow authenticated users to view assignments" already exists. Skipping creation.';
+  END IF;
+END $$;
 
-CREATE POLICY "Allow authenticated users to manage assignments"
-ON public.student_therapist_assignment FOR ALL TO authenticated 
-USING (true) WITH CHECK (true);
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies 
+    WHERE schemaname = 'demo' 
+    AND tablename = 'student_therapist_assignment' 
+    AND policyname = 'Allow authenticated users to manage assignments'
+  ) THEN
+    CREATE POLICY "Allow authenticated users to manage assignments"
+    ON demo.student_therapist_assignment FOR ALL TO authenticated 
+    USING (true) WITH CHECK (true);
+    RAISE NOTICE 'Policy "Allow authenticated users to manage assignments" created successfully.';
+  ELSE
+    RAISE NOTICE 'Policy "Allow authenticated users to manage assignments" already exists. Skipping creation.';
+  END IF;
+END $$;
 
 -- ============================================
 -- Associated Functions
 -- ============================================
 
 -- Get students under care (critical/moderate emotional states)
-CREATE OR REPLACE FUNCTION public.get_students_under_care()
+CREATE OR REPLACE FUNCTION demo.get_students_under_care()
 RETURNS TABLE(
   user_id uuid,
   email text,
@@ -52,7 +113,7 @@ RETURNS TABLE(
 )
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public
+SET search_path = demo, public
 AS $$
 BEGIN
   RETURN QUERY
@@ -99,7 +160,7 @@ BEGIN
         ) IN ('Surprise', 'Neutral') THEN 'moderate'
         ELSE 'good'
       END as emotion_state
-    FROM userspub u
+    FROM public.userspub u
   ),
   cerq_scores AS (
     SELECT 
@@ -149,4 +210,4 @@ BEGIN
 END;
 $$;
 
-GRANT EXECUTE ON FUNCTION public.get_students_under_care() TO authenticated;
+GRANT EXECUTE ON FUNCTION demo.get_students_under_care() TO authenticated;

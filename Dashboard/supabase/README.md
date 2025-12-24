@@ -5,6 +5,7 @@ This folder contains the reorganized database schema, separated into logical com
 ## 📁 Folder Structure
 
 ### `/sql` - All SQL Files
+
 Parent folder containing all database-related SQL files, organized into subfolders:
 
 #### `/sql/schema` - Database Schema Definitions

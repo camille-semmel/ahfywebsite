@@ -16,6 +16,7 @@ export const useInstitutionSettings = () => {
     queryKey: ["institution-settings"],
     queryFn: async () => {
       const { data, error } = await supabase
+        .schema("public")
         .from("institution_settings")
         .select("*")
         .single();

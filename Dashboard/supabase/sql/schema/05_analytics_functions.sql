@@ -1,10 +1,23 @@
 -- ============================================
+-- Schema Configuration
+-- ============================================
+-- SCHEMA_NAME: demo  <-- CHANGE THIS VALUE, then Find/Replace all 'demo' below
+-- 
+-- TO CHANGE SCHEMA: 
+-- 1. Update SCHEMA_NAME above
+-- 2. Find and replace ALL occurrences of 'demo' with your schema name in this file
+-- ============================================
+
+-- Set search path to the target schema
+SET search_path TO demo;
+
+-- ============================================
 -- Analytics Functions
 -- Functions for reporting and dashboard analytics
 -- ============================================
 
 -- Get therapeutic engagement growth data over time
-CREATE OR REPLACE FUNCTION get_therapeutic_engagement_growth(weeks_back INTEGER DEFAULT 6)
+CREATE OR REPLACE FUNCTION demo.get_therapeutic_engagement_growth(weeks_back INTEGER DEFAULT 6)
 RETURNS TABLE (
   week_start DATE,
   week_end DATE,
@@ -63,7 +76,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- ============================================
 
 -- Get comprehensive student overview
-CREATE OR REPLACE FUNCTION public.get_students_overview()
+CREATE OR REPLACE FUNCTION demo.get_students_overview()
 RETURNS TABLE(
   user_id uuid,
   email text,
@@ -78,7 +91,7 @@ RETURNS TABLE(
 )
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public
+SET search_path = demo, public
 AS $$
 BEGIN
   RETURN QUERY
@@ -142,4 +155,4 @@ BEGIN
 END;
 $$;
 
-GRANT EXECUTE ON FUNCTION public.get_students_overview() TO authenticated;
+GRANT EXECUTE ON FUNCTION demo.get_students_overview() TO authenticated;

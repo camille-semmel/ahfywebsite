@@ -33,9 +33,9 @@ const Team = () => {
     try {
       // Get total count
       const { count } = await supabase
-        .from('university_portal_access_data')
-        .select('*', { count: 'exact', head: true });
-      
+        .from("university_portal_access_data")
+        .select("*", { count: "exact", head: true });
+
       setTotalMembers(count || 0);
 
       // Fetch paginated data
@@ -43,25 +43,25 @@ const Team = () => {
       const to = from + MEMBERS_PER_PAGE - 1;
 
       const { data, error } = await supabase
-        .from('university_portal_access_data')
-        .select('id, first_name, email, access_level')
-        .order('access_level', { ascending: true }) // Owner first
-        .order('created_at', { ascending: false })
+        .from("university_portal_access_data")
+        .select("id, first_name, email, access_level")
+        .order("access_level", { ascending: true }) // Owner first
+        .order("created_at", { ascending: false })
         .range(from, to);
 
       if (error) throw error;
 
       // Map database fields to UI TeamMember interface
-      const mappedMembers: TeamMember[] = (data || []).map(item => ({
+      const mappedMembers: TeamMember[] = (data || []).map((item) => ({
         id: item.id,
         first_name: item.first_name,
         email: item.email,
-        access: item.access_level as AccessLevel | "owner"
+        access: item.access_level as AccessLevel | "owner",
       }));
 
       setMembers(mappedMembers);
     } catch (error) {
-      console.error('Error fetching team members:', error);
+      console.error("Error fetching team members:", error);
       toast({
         title: "Error loading team",
         description: "Failed to load team members",
@@ -87,9 +87,9 @@ const Team = () => {
     try {
       // Check if email already exists
       const { data: existing } = await supabase
-        .from('university_portal_access_data')
-        .select('email')
-        .eq('email', email)
+        .from("university_portal_access_data")
+        .select("email")
+        .eq("email", email)
         .maybeSingle();
 
       if (existing) {
@@ -103,49 +103,51 @@ const Team = () => {
       }
 
       // Get current user's ID for invited_by
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
       // Insert new member with access_method = 'manual'
       const { data, error } = await supabase
-        .from('university_portal_access_data')
+        .from("university_portal_access_data")
         .insert({
           first_name: firstName,
           email: email,
           access_level: access,
-          access_method: 'manual',
-          invited_by: user?.id
+          access_method: "manual",
+          invited_by: user?.id,
         })
         .select();
 
       if (error) {
-        console.error('Supabase insert error:', error);
+        console.error("Supabase insert error:", error);
         throw error;
       }
 
-      console.log('Team member added to database, sending invitation email...');
+      console.log("Team member added to database, sending invitation email...");
 
       // Fetch institution name for email
       const { data: institutionData } = await supabase
-        .from('institution_settings')
-        .select('institution_name')
+        .schema("public")
+        .from("institution_settings")
+        .select("institution_name")
         .single();
 
       // Send invitation email via edge function
-      const { data: emailData, error: emailError } = await supabase.functions.invoke(
-        'send-team-invitation',
-        {
+      const { data: emailData, error: emailError } =
+        await supabase.functions.invoke("send-team-invitation", {
           body: {
             firstName: firstName,
             email: email,
             accessLevel: access,
-            invitedByName: user?.email || 'Your team administrator',
-            institutionName: institutionData?.institution_name || 'your institution'
-          }
-        }
-      );
+            invitedByName: user?.email || "Your team administrator",
+            institutionName:
+              institutionData?.institution_name || "your institution",
+          },
+        });
 
       if (emailError) {
-        console.error('Failed to send invitation email:', emailError);
+        console.error("Failed to send invitation email:", emailError);
         // Show partial success - user added but email failed
         toast({
           title: "Invitation created",
@@ -153,7 +155,7 @@ const Team = () => {
           variant: "default",
         });
       } else {
-        console.log('Invitation email sent successfully:', emailData);
+        console.log("Invitation email sent successfully:", emailData);
         // Full success
         toast({
           title: "Invitation sent",
@@ -168,15 +170,14 @@ const Team = () => {
 
       // Refresh the list
       fetchTeamMembers();
-
     } catch (error: any) {
-      console.error('Error inviting member:', error);
-      
+      console.error("Error inviting member:", error);
+
       let errorMessage = "Failed to send invitation";
       if (error?.message) {
         errorMessage = error.message;
       }
-      
+
       toast({
         title: "Invitation failed",
         description: errorMessage,
@@ -190,28 +191,31 @@ const Team = () => {
   const handleGenerateLink = async () => {
     try {
       // Generate unique token
-      const token = Math.random().toString(36).substring(2, 15) + 
-                    Math.random().toString(36).substring(2, 15);
-      
+      const token =
+        Math.random().toString(36).substring(2, 15) +
+        Math.random().toString(36).substring(2, 15);
+
       const link = `${window.location.origin}/shared/${token}`;
-      
+
       // Get current user
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       // Store link information in database with actual name and email
       const { error } = await supabase
-        .from('university_portal_access_data')
+        .from("university_portal_access_data")
         .insert({
           first_name: firstName.trim(),
           email: email.trim().toLowerCase(),
           access_level: access,
-          access_method: 'link',
+          access_method: "link",
           shared_link: token,
-          invited_by: user?.id
+          invited_by: user?.id,
         });
-      
+
       if (error) {
-        if (error.code === '23505') {
+        if (error.code === "23505") {
           toast({
             title: "Email already exists",
             description: "This email is already associated with a team member",
@@ -221,9 +225,9 @@ const Team = () => {
         }
         throw error;
       }
-      
+
       setGeneratedLink(link);
-      
+
       toast({
         title: "Link generated",
         description: "Your shareable link is ready to copy",
@@ -236,9 +240,8 @@ const Team = () => {
 
       // Refresh the list
       fetchTeamMembers();
-      
     } catch (error) {
-      console.error('Error generating link:', error);
+      console.error("Error generating link:", error);
       toast({
         title: "Generation failed",
         description: "Failed to generate shareable link",
@@ -268,8 +271,8 @@ const Team = () => {
   const handleAccessChange = async (id: string, access: AccessLevel) => {
     try {
       // Prevent changing owner access
-      const member = members.find(m => m.id === id);
-      if (member?.access === 'owner') {
+      const member = members.find((m) => m.id === id);
+      if (member?.access === "owner") {
         toast({
           title: "Cannot modify owner",
           description: "Owner access cannot be changed",
@@ -279,27 +282,24 @@ const Team = () => {
       }
 
       const { error } = await supabase
-        .from('university_portal_access_data')
-        .update({ 
+        .from("university_portal_access_data")
+        .update({
           access_level: access,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
-        .eq('id', id);
+        .eq("id", id);
 
       if (error) throw error;
 
       // Update local state
-      setMembers(members.map(m => 
-        m.id === id ? { ...m, access } : m
-      ));
+      setMembers(members.map((m) => (m.id === id ? { ...m, access } : m)));
 
       toast({
         title: "Access updated",
         description: "Team member access has been updated",
       });
-
     } catch (error) {
-      console.error('Error updating access:', error);
+      console.error("Error updating access:", error);
       toast({
         title: "Update failed",
         description: "Failed to update access level",
@@ -311,8 +311,8 @@ const Team = () => {
   const handleRemove = async (id: string) => {
     try {
       // Prevent removing owner
-      const member = members.find(m => m.id === id);
-      if (member?.access === 'owner') {
+      const member = members.find((m) => m.id === id);
+      if (member?.access === "owner") {
         toast({
           title: "Cannot remove owner",
           description: "The owner cannot be removed",
@@ -322,9 +322,9 @@ const Team = () => {
       }
 
       const { error } = await supabase
-        .from('university_portal_access_data')
+        .from("university_portal_access_data")
         .delete()
-        .eq('id', id);
+        .eq("id", id);
 
       if (error) throw error;
 
@@ -336,15 +336,14 @@ const Team = () => {
       // Refresh list and adjust pagination if needed
       const newTotal = totalMembers - 1;
       const newTotalPages = Math.ceil(newTotal / MEMBERS_PER_PAGE);
-      
+
       if (currentPage > newTotalPages && newTotalPages > 0) {
         setCurrentPage(newTotalPages);
       } else {
         fetchTeamMembers();
       }
-
     } catch (error) {
-      console.error('Error removing member:', error);
+      console.error("Error removing member:", error);
       toast({
         title: "Removal failed",
         description: "Failed to remove team member",
@@ -366,14 +365,16 @@ const Team = () => {
 
         {/* Invite Form */}
         <div className="p-6 rounded-lg border border-border bg-card">
-          <InviteForm 
+          <InviteForm
             firstName={firstName}
             setFirstName={setFirstName}
             email={email}
             setEmail={setEmail}
             access={access}
             setAccess={setAccess}
-            onSubmit={activeTab === "invited" ? handleInvite : handleGenerateLink}
+            onSubmit={
+              activeTab === "invited" ? handleInvite : handleGenerateLink
+            }
             buttonText={activeTab === "invited" ? "Invite" : "Generate Link"}
             isLinkTab={activeTab === "link"}
           />
@@ -393,14 +394,18 @@ const Team = () => {
               <h2 className="text-xl font-semibold text-foreground mb-4">
                 Team Members
               </h2>
-              
+
               {loading ? (
                 <div className="text-center py-8">
-                  <p className="text-muted-foreground">Loading team members...</p>
+                  <p className="text-muted-foreground">
+                    Loading team members...
+                  </p>
                 </div>
               ) : members.length === 0 ? (
                 <div className="text-center py-8 border border-border rounded-lg bg-card">
-                  <p className="text-muted-foreground">No team members yet. Invite someone to get started!</p>
+                  <p className="text-muted-foreground">
+                    No team members yet. Invite someone to get started!
+                  </p>
                 </div>
               ) : (
                 <>
@@ -409,7 +414,7 @@ const Team = () => {
                     onAccessChange={handleAccessChange}
                     onRemove={handleRemove}
                   />
-                  
+
                   <TeamMembersPagination
                     currentPage={currentPage}
                     totalPages={totalPages}
@@ -424,7 +429,7 @@ const Team = () => {
               <h2 className="text-xl font-semibold text-foreground mb-4">
                 Shareable Link
               </h2>
-              <LinkAccessPanel 
+              <LinkAccessPanel
                 generatedLink={generatedLink}
                 onCopyLink={handleCopyLink}
               />

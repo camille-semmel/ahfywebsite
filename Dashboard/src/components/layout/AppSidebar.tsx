@@ -19,9 +19,9 @@ const AppSidebar = () => {
   const handleLogout = async () => {
     try {
       await signOut();
-      toast.success('Logged out successfully');
+      toast.success("Logged out successfully");
     } catch (error) {
-      toast.error('Failed to log out');
+      toast.error("Failed to log out");
     }
   };
 
@@ -31,7 +31,7 @@ const AppSidebar = () => {
     { icon: GraduationCap, label: "Students", path: "/students" },
     { icon: UserCog, label: "Therapist", path: "/therapist" },
     { icon: Settings, label: "Settings", path: "/settings" },
-    { icon: CreditCard, label: "Subscription", path: "/subscriptions" },
+    // { icon: CreditCard, label: "Subscription", path: "/subscriptions" },
   ];
 
   return (

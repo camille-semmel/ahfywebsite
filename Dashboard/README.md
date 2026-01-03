@@ -24,10 +24,10 @@ Follow these steps:
 
 ```sh
 # Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+git clone <GIT_URL>
 
 # Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+cd ./Dashboard
 
 # Step 3: Install the necessary dependencies.
 npm i
@@ -36,19 +36,52 @@ npm i
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The development server will start on **http://localhost:8080** with the base path `/dashboard/`.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+**To access the dashboard:**
 
-**Use GitHub Codespaces**
+- Open your browser and navigate to: **http://localhost:8080/dashboard/**
+- Or use VS Code's "Simple Browser" preview to view: **http://localhost:8080/dashboard/**
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+**Important Notes:**
+
+- The dev server runs on port **8080** (configured in vite.config.ts)
+- The base path is set to **/dashboard/** to match the deployment structure
+- Make sure no other service is using port 8080 before starting the dev server
+- The server will automatically reload when you make changes to the code
+
+**Contribution Workflow**
+
+To contribute changes to this project, follow this workflow:
+
+1. **Create a new branch** for your feature or fix:
+
+   ```sh
+   git checkout -b feature/your-feature-name
+   ```
+
+2. **Make your changes** in your preferred IDE (VS Code, WebStorm, etc.)
+
+3. **Commit and push** your changes:
+
+   ```sh
+   git add .
+   git commit -m "Description of your changes"
+   git push origin feature/your-feature-name
+   ```
+
+4. **Create a Pull Request (PR)** on GitHub:
+
+   - Navigate to the repository on GitHub
+   - Click "Pull requests" → "New pull request"
+   - Select your branch and create the PR
+   - Add a clear description of your changes
+
+5. **Request Review**: Assign another developer to review your PR
+
+6. **Merge**: Once approved by another developer, merge the PR into the main branch
+
+**Note**: Never commit directly to the main branch. All changes must go through the PR review process.
 
 ## What technologies are used for this project?
 
@@ -71,3 +104,7 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+```
+
+```

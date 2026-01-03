@@ -37,67 +37,117 @@ const App = () => (
               {/* Public routes */}
               <Route path="/" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
-              
+
               {/* Protected routes */}
-              <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <AppLayout><Dashboard /></AppLayout>
-                </ProtectedRoute>
-              } />
-              <Route path="/students" element={
-                <ProtectedRoute>
-                  <AppLayout><Students /></AppLayout>
-                </ProtectedRoute>
-              } />
-              <Route path="/team" element={
-                <ProtectedRoute>
-                  <AppLayout><Team /></AppLayout>
-                </ProtectedRoute>
-              } />
-              <Route path="/therapist" element={
-                <ProtectedRoute>
-                  <AppLayout><Therapist /></AppLayout>
-                </ProtectedRoute>
-              } />
-              
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <Dashboard />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/students"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <Students />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/team"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <Team />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/therapist"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <Therapist />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+
               {/* Settings routes (protected) */}
-              <Route path="/settings" element={
-                <ProtectedRoute>
-                  <AppLayout><SettingsIndex /></AppLayout>
-                </ProtectedRoute>
-              } />
-              <Route path="/settings/security" element={
-                <ProtectedRoute>
-                  <AppLayout><SecurityPrivacy /></AppLayout>
-                </ProtectedRoute>
-              } />
-              <Route path="/settings/language" element={
-                <ProtectedRoute>
-                  <AppLayout><Language /></AppLayout>
-                </ProtectedRoute>
-              } />
-              <Route path="/settings/profile" element={
-                <ProtectedRoute>
-                  <AppLayout><Profile /></AppLayout>
-                </ProtectedRoute>
-              } />
-              <Route path="/settings/onboarding" element={
-                <ProtectedRoute>
-                  <AppLayout><Onboarding /></AppLayout>
-                </ProtectedRoute>
-              } />
-              
-              <Route path="/subscriptions" element={
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <SettingsIndex />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings/security"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <SecurityPrivacy />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings/language"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <Language />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings/profile"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <Profile />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings/onboarding"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <Onboarding />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* <Route path="/subscriptions" element={
                 <ProtectedRoute>
                   <AppLayout><Subscriptions /></AppLayout>
                 </ProtectedRoute>
-              } />
-              <Route path="/support" element={
-                <ProtectedRoute>
-                  <AppLayout><Support /></AppLayout>
-                </ProtectedRoute>
-              } />
-              
+              } /> */}
+              <Route
+                path="/support"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <Support />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

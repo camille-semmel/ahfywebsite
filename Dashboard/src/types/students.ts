@@ -9,4 +9,9 @@ export interface StudentOverview {
   total_exercises_done?: number;
   improvement_questionnaire?: 'Completed' | 'In Progress' | 'Pending';
   created_at?: string;
+  age?: number;
+  gender?: string;
+  house?: string;
+  year_level?: number;
+
 }

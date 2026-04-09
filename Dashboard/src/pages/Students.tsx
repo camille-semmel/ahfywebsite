@@ -14,14 +14,16 @@ import { useStudents } from "@/hooks/useStudents";
 import { PersonalizedLinkDialog } from "@/components/students/PersonalizedLinkDialog";
 import { Skeleton } from "@/components/ui/skeleton";
 
-type AgeRange = "all"|"10-12" | "13-18" | "19-25" | "26-35" | "36-50" | "50+";
-type Gender  = "all"| "male"| "female" | "other" | "prefer-not-to-say";
-type House = "all" | "cameron" | "campbell" | "douglas" | "gordon" | "macgregor" | "stewart" | "none";
+type AgeRange = "10-12" | "13-18" | "19-25" | "26-35" | "36-50" | "50+";
+type Gender  =  "male"| "female" | "other" | "prefer-not-to-say";
+type House =  "cameron" | "campbell" | "douglas" | "gordon" | "macgregor" | "stewart" | "none";
+type YearLevel =  "9" | "10" | "11" | "12";
 
 interface FilterState {
-  age:AgeRange;
-  gender: Gender;
-  house: House;
+  age:AgeRange[];
+  gender: Gender[];
+  house: House[];
+  year: YearLevel[]
 }
 
 interface StudentFiltersProps {
@@ -29,12 +31,7 @@ interface StudentFiltersProps {
 }
 
 const houseColors: Record<House, { bg: string; border: string; text: string; dot: string }> = {
-  all: {
-    bg: "bg-gray-100",
-    border: "border-gray-300",
-    text: "text-gray-600",
-    dot: "bg-gray-400",
-  },
+  
   cameron: {
     bg: "bg-red-50",
     border: "border-red-300",
@@ -81,32 +78,32 @@ const houseColors: Record<House, { bg: string; border: string; text: string; dot
 
 const Students = () => {
   const [filters, setFilters] = useState<FilterState>({
-    age: "all",
-    gender: "all",
-    house: "all",
+    age: [],
+    gender: [],
+    house: [],
+     year: [],
   }); 
 
-   const [openDropdown, setOpenDropdown] = useState<"age" | "gender" | "house" | null>(null);
+   const [openDropdown, setOpenDropdown] = useState<"age" | "gender" | "house" | "year" | null>(null);
 
  
-  const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
-    const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
-    setOpenDropdown(null);
-    
-  };
+  const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K][number]) => {
+  const current = filters[key] as string[];
+  const newValues = current.includes(value as string)
+    ? current.filter(v => v !== value)
+    : [...current, value as string];
+  setFilters({ ...filters, [key]: newValues });
+};
 
-const hasActiveFilters =
-    filters.age !== "all" || filters.gender !== "all" || filters.house !== "all";
+const hasActiveFilters = filters.age.length > 0 || filters.gender.length > 0 || filters.house.length > 0 || filters.year.length > 0;
+
  
   const clearFilters = () => {
-    const reset: FilterState = { age: "all", gender: "all", house: "all" };
-    setFilters(reset);
-    
-  };
+  setFilters({ age: [], gender: [], house: [] , year: []});
+};
+
   
    const ageLabels: Record<AgeRange, string> = {
-    all: "All Ages",
     "10-12": "10 – 12",
     "13-18": "13 – 18",
     "19-25": "19 – 25",
@@ -115,14 +112,14 @@ const hasActiveFilters =
     "50+": "50+",
   };
   const genderLabels: Record<Gender, string> = {
-    all: "All Genders",
+    
     male: "Male",
     female: "Female",
     other: "Other",
     "prefer-not-to-say" : "Prefer not to say",
   };
   const houseLabels: Record<House, string> = {
-  all:       "All Houses",
+  
   cameron:   "Cameron",
   campbell:  "Campbell",
   douglas:   "Douglas",
@@ -132,6 +129,13 @@ const hasActiveFilters =
   none:      "No House",
 };
 
+const yearLabels: Record<YearLevel, string> = {
+  
+  "9": "Year 9",
+  "10": "Year 10",
+  "11": "Year 11",
+  "12": "Year 12",
+};
 
 
   const { data: students, isLoading, error } = useStudents();
@@ -146,29 +150,54 @@ const hasActiveFilters =
 
   // Real-time search filtering
   const filteredStudents = useMemo(() => {
-    if (!students || !searchQuery.trim()) return students;
+  if (!students) return students;
 
-    const query = searchQuery.toLowerCase().trim();
-    
-    return students.filter((student) => {
-      const email = student?.email?.toLowerCase() || '';
-      const firstName = student?.first_name?.toLowerCase() || '';
-      const lastName = student?.last_name?.toLowerCase() || '';
-      const status = student?.status?.toLowerCase() || '';
-      const emotion = student?.last_emotion_identified?.toLowerCase() || '';
-      const emotionalState = student?.emotional_state?.toLowerCase() || '';
-      
-      return (
-        email.includes(query) ||
-        firstName.includes(query) ||
-        lastName.includes(query) ||
-        status.includes(query) ||
-        emotion.includes(query) ||
-        emotionalState.includes(query)
-      );
-    });
-  }, [students, searchQuery]);
+  return students.filter((student) => {
+    // Search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      const matchesSearch =
+        (student?.email?.toLowerCase() || '').includes(query) ||
+        (student?.first_name?.toLowerCase() || '').includes(query) ||
+        (student?.last_name?.toLowerCase() || '').includes(query) ||
+        (student?.status?.toLowerCase() || '').includes(query) ||
+        (student?.last_emotion_identified?.toLowerCase() || '').includes(query) ||
+        (student?.emotional_state?.toLowerCase() || '').includes(query);
+      if (!matchesSearch) return false;
+    }
+    // Gender filter
+    if (filters.gender.length > 0) {
+      if (!filters.gender.includes((student?.gender?.toLowerCase() || '') as Gender)) return false;
+    }
 
+    // House filter
+    if (filters.house.length > 0) {
+      const studentHouse = (student?.house?.toLowerCase() || 'none') as House;
+      if (!filters.house.includes(studentHouse)) return false;
+    }
+    // Year level filter
+    if (filters.year.length > 0) {
+      const year = student?.year_level ? student.year_level.toString() : null;
+      if (!year || !filters.year.includes(year as YearLevel)) return false;
+    }
+    // Age filter
+    if (filters.age.length > 0) {
+      const age = student?.age;
+      if (age == null) return false;
+      const ranges: Record<AgeRange, (a: number) => boolean> = {
+        "10-12": (a) => a >= 10 && a <= 12,
+        "13-18": (a) => a >= 13 && a <= 18,
+        "19-25": (a) => a >= 19 && a <= 25,
+        "26-35": (a) => a >= 26 && a <= 35,
+        "36-50": (a) => a >= 36 && a <= 50,
+        "50+":   (a) => a > 50,
+      };
+      if (!filters.age.some(range => ranges[range]?.(age))) return false;
+    }
+
+    return true;
+  });
+}, [students, searchQuery, filters]);
   if (error) {
     return (
       <div className="p-8">
@@ -212,7 +241,7 @@ const hasActiveFilters =
         <button
           onClick={() => setOpenDropdown(openDropdown === "age" ? null : "age")}
           className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all ${
-            filters.age !== "all"
+            filters.age.length > 0
               ? "border-orange-400 bg-orange-50 text-orange-600"
               : "border-gray-300 bg-white text-gray-600 hover:border-orange-300 hover:text-orange-500"
           }`}
@@ -221,7 +250,8 @@ const hasActiveFilters =
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
-          {ageLabels[filters.age]}
+          {filters.age.length === 0 ? "All Ages" : filters.age.length === 1 ? ageLabels[filters.age[0]] : `${filters.age.length} Ages`}
+
           <svg
             className={`w-3.5 h-3.5 transition-transform ${openDropdown === "age" ? "rotate-180" : ""}`}
             fill="none"
@@ -239,7 +269,7 @@ const hasActiveFilters =
                 key={option}
                 onClick={() => updateFilter("age", option)}
                 className={`w-full text-left px-4 py-2 text-sm transition-colors hover:bg-orange-50 hover:text-orange-600 ${
-                  filters.age === option ? "text-orange-500 font-semibold bg-orange-50" : "text-gray-600"
+                  filters.age.includes(option) ? "text-orange-500 font-semibold bg-orange-50" : "text-gray-600"
                 }`}
               >
                 {ageLabels[option]}
@@ -254,7 +284,8 @@ const hasActiveFilters =
         <button
           onClick={() => setOpenDropdown(openDropdown === "gender" ? null : "gender")}
           className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all ${
-            filters.gender !== "all"
+            filters.gender.length > 0
+
               ? "border-orange-400 bg-orange-50 text-orange-600"
               : "border-gray-300 bg-white text-gray-600 hover:border-orange-300 hover:text-orange-500"
           }`}
@@ -263,7 +294,11 @@ const hasActiveFilters =
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
           </svg>
-          {genderLabels[filters.gender]}
+          {filters.gender.length === 0
+            ? "All Genders"
+            : filters.gender.length === 1
+              ? genderLabels[filters.gender[0]]
+              : `${filters.gender.length} Genders`}
           <svg
             className={`w-3.5 h-3.5 transition-transform ${openDropdown === "gender" ? "rotate-180" : ""}`}
             fill="none"
@@ -281,7 +316,7 @@ const hasActiveFilters =
                 key={option}
                 onClick={() => updateFilter("gender", option)}
                 className={`w-full text-left px-4 py-2 text-sm transition-colors hover:bg-orange-50 hover:text-orange-600 ${
-                  filters.gender === option ? "text-orange-500 font-semibold bg-orange-50" : "text-gray-600"
+                  filters.gender.includes(option)? "text-orange-500 font-semibold bg-orange-50" : "text-gray-600"
                 }`}
               >
                 {genderLabels[option]}
@@ -296,19 +331,24 @@ const hasActiveFilters =
         <button
           onClick={() => setOpenDropdown(openDropdown === "house" ? null : "house")}
           className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all ${
-            filters.house !== "all"
-              ? `${houseColors[filters.house].border} ${houseColors[filters.house].bg} ${houseColors[filters.house].text}`
+            filters.house.length > 0
+
+              ? "border-orange-400 bg-orange-50 text-orange-600"
               : "border-gray-300 bg-white text-gray-600 hover:border-orange-300 hover:text-orange-500"
           }`}
           style={{ fontFamily: "inherit" }}
         >
           
-          {filters.house === "all" && (
+          {filters.house.length === 0 &&  (
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
           )}
-          {houseLabels[filters.house]}
+          {filters.house.length === 0
+            ? "All Houses"
+            : filters.house.length === 1
+              ? houseLabels[filters.house[0]]
+              : `${filters.house.length} Houses`}
           <svg
             className={`w-3.5 h-3.5 transition-transform ${openDropdown === "house" ? "rotate-180" : ""}`}
             fill="none"
@@ -326,11 +366,11 @@ const hasActiveFilters =
                 key={option}
                 onClick={() => updateFilter("house", option)}
                 className={`w-full text-left px-4 py-2 text-sm transition-colors flex items-center gap-2.5 ${
-                  filters.house === option ? "font-semibold" : "text-gray-600"
+                  filters.house.includes(option)? "font-semibold" : "text-gray-600"
                 } hover:bg-gray-50`}
               >
                 
-                <span className={filters.house === option ? houseColors[option]?.text ?? "text-gray-700" : ""}>
+                <span className={filters.house.includes(option) ? "text-orange-500" : ""}>
                   {houseLabels[option]}
                 </span>
               </button>
@@ -339,6 +379,51 @@ const hasActiveFilters =
         )}
       </div>
  
+        {/* Year Level Filter */}
+        <div className="relative">
+          <button
+            onClick={() => setOpenDropdown(openDropdown === "year" ? null : "year")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all ${
+              filters.year.length > 0
+                ? "border-orange-400 bg-orange-50 text-orange-600"
+                : "border-gray-300 bg-white text-gray-600 hover:border-orange-300 hover:text-orange-500"
+            }`}
+            style={{ fontFamily: "inherit" }}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            {filters.year.length === 0
+              ? "All Years"
+              : filters.year.length === 1
+                ? yearLabels[filters.year[0]]
+                : `${filters.year.length} Years`}
+            <svg
+              className={`w-3.5 h-3.5 transition-transform ${openDropdown === "year" ? "rotate-180" : ""}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          {openDropdown === "year" && (
+            <div className="absolute top-full mt-2 left-0 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-50 min-w-[150px]">
+              {(Object.keys(yearLabels) as YearLevel[]).map((option) => (
+                <button
+                  key={option}
+                  onClick={() => updateFilter("year", option)}
+                  className={`w-full text-left px-4 py-2 text-sm transition-colors hover:bg-orange-50 hover:text-orange-600 ${
+                    filters.year.includes(option) ? "text-orange-500 font-semibold bg-orange-50" : "text-gray-600"
+                  }`}
+                >
+                  {yearLabels[option]}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       {/* Clear Filters */}
       {hasActiveFilters && (
         <button
@@ -371,6 +456,7 @@ const hasActiveFilters =
                 <TableHead className="font-semibold">Age</TableHead>
                 <TableHead className="font-semibold">Gender</TableHead>
                 <TableHead className="font-semibold">House</TableHead>
+                <TableHead className="font-semibold">Year Level</TableHead>
                 <TableHead className="font-semibold">
                   Status: Invited/Downloaded
                 </TableHead>
@@ -398,7 +484,7 @@ const hasActiveFilters =
               ) : filteredStudents?.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={9}
+                    colSpan={13}
                     className="text-center text-muted-foreground py-12"
                   >
                     {searchQuery ? "No results match your search." : "No students found."}
@@ -413,6 +499,7 @@ const hasActiveFilters =
                     <TableCell>{student?.age ?? 'Not Available'}</TableCell>
                     <TableCell>{student?.gender ?? 'Not Available'}</TableCell>
                     <TableCell>{student?.house ?? 'None'}</TableCell>
+                    <TableCell>{student?.year_level ?? 'Not Available'}</TableCell>
                     <TableCell>
                       <span
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${

@@ -27,56 +27,6 @@ interface FilterState {
   year: YearLevel[]
 }
 
-interface StudentFiltersProps {
-  onFilterChange?: (filters: FilterState) => void;
-}
-
-const houseColors: Record<House, { bg: string; border: string; text: string; dot: string }> = {
-  
-  cameron: {
-    bg: "bg-red-50",
-    border: "border-red-300",
-    text: "text-red-600",
-    dot: "bg-red-500",
-  },
-  campbell: {
-    bg: "bg-green-50",
-    border: "border-green-300",
-    text: "text-green-600",
-    dot: "bg-green-500",
-  },
-  douglas: {
-    bg: "bg-yellow-50",
-    border: "border-yellow-300",
-    text: "text-yellow-600",
-    dot: "bg-yellow-400",
-  },
-  gordon: {
-    bg: "bg-blue-50",
-    border: "border-blue-300",
-    text: "text-blue-600",
-    dot: "bg-blue-500",
-  },
-  macgregor: {
-    bg: "bg-blue-50",
-    border: "border-blue-300",
-    text: "text-blue-600",
-    dot: "bg-blue-500",
-  },
-  stewart: {
-    bg: "bg-blue-50",
-    border: "border-blue-300",
-    text: "text-blue-600",
-    dot: "bg-blue-500",
-  },
-  none: { 
-    bg: "bg-white",
-    border: "border-gray-200", 
-    text: "text-gray-500",
-    dot: "bg-gray-300" },
-};
-
-
 const Students = () => {
   const [filters, setFilters] = useState<FilterState>({
     age: [],

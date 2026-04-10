@@ -18,6 +18,7 @@ type AgeRange = "10-12" | "13-18" | "19-25" | "26-35" | "36-50" | "50+";
 type Gender  =  "male"| "female" | "other" | "prefer-not-to-say";
 type House =  "cameron" | "campbell" | "douglas" | "gordon" | "macgregor" | "stewart" | "none";
 type YearLevel =  "9" | "10" | "11" | "12";
+type FilterUpdate = | { key: "age";    value: AgeRange } | { key: "gender"; value: Gender }| { key: "house";  value: House } | { key: "year";   value: YearLevel };
 
 interface FilterState {
   age:AgeRange[];
@@ -87,12 +88,16 @@ const Students = () => {
    const [openDropdown, setOpenDropdown] = useState<"age" | "gender" | "house" | "year" | null>(null);
 
  
-  const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K][number]) => {
-  const current = filters[key] as string[];
-  const newValues = current.includes(value as string)
-    ? current.filter(v => v !== value)
-    : [...current, value as string];
-  setFilters({ ...filters, [key]: newValues });
+  const updateFilter = ({ key, value }: FilterUpdate) => {
+  setFilters(prev => {
+    const current = prev[key];
+    return {
+      ...prev,
+      [key]: current.includes(value as never)
+        ? current.filter(v => v !== value)
+        : [...current, value]
+    };
+  });
 };
 
 const hasActiveFilters = filters.age.length > 0 || filters.gender.length > 0 || filters.house.length > 0 || filters.year.length > 0;
@@ -148,9 +153,18 @@ const yearLabels: Record<YearLevel, string> = {
     setLinkDialogOpen(true);
   };
 
+  const ageRanges: Record<AgeRange, (a: number) => boolean> = {
+        "10-12": (a) => a >= 10 && a <= 12,
+        "13-18": (a) => a >= 13 && a <= 18,
+        "19-25": (a) => a >= 19 && a <= 25,
+        "26-35": (a) => a >= 26 && a <= 35,
+        "36-50": (a) => a >= 36 && a <= 50,
+        "50+":   (a) => a > 50,
+      };
+
   // Real-time search filtering
   const filteredStudents = useMemo(() => {
-  if (!students) return students;
+  if (!students) return [];
 
   return students.filter((student) => {
     // Search query
@@ -184,15 +198,7 @@ const yearLabels: Record<YearLevel, string> = {
     if (filters.age.length > 0) {
       const age = student?.age;
       if (age == null) return false;
-      const ranges: Record<AgeRange, (a: number) => boolean> = {
-        "10-12": (a) => a >= 10 && a <= 12,
-        "13-18": (a) => a >= 13 && a <= 18,
-        "19-25": (a) => a >= 19 && a <= 25,
-        "26-35": (a) => a >= 26 && a <= 35,
-        "36-50": (a) => a >= 36 && a <= 50,
-        "50+":   (a) => a > 50,
-      };
-      if (!filters.age.some(range => ranges[range]?.(age))) return false;
+      if (!filters.age.some(range => ageRanges[range]?.(age))) return false;
     }
 
     return true;
@@ -267,7 +273,7 @@ const yearLabels: Record<YearLevel, string> = {
             {(Object.keys(ageLabels) as AgeRange[]).map((option) => (
               <button
                 key={option}
-                onClick={() => updateFilter("age", option)}
+                onClick={() => updateFilter({ key: "age", value: option })}
                 className={`w-full text-left px-4 py-2 text-sm transition-colors hover:bg-orange-50 hover:text-orange-600 ${
                   filters.age.includes(option) ? "text-orange-500 font-semibold bg-orange-50" : "text-gray-600"
                 }`}
@@ -314,7 +320,7 @@ const yearLabels: Record<YearLevel, string> = {
             {(Object.keys(genderLabels) as Gender[]).map((option) => (
               <button
                 key={option}
-                onClick={() => updateFilter("gender", option)}
+                onClick={() => updateFilter({ key: "gender", value: option })}
                 className={`w-full text-left px-4 py-2 text-sm transition-colors hover:bg-orange-50 hover:text-orange-600 ${
                   filters.gender.includes(option)? "text-orange-500 font-semibold bg-orange-50" : "text-gray-600"
                 }`}
@@ -364,7 +370,7 @@ const yearLabels: Record<YearLevel, string> = {
             {(Object.keys(houseLabels) as House[]).map((option) => (
               <button
                 key={option}
-                onClick={() => updateFilter("house", option)}
+                onClick={() => updateFilter({ key: "house", value: option })}
                 className={`w-full text-left px-4 py-2 text-sm transition-colors flex items-center gap-2.5 ${
                   filters.house.includes(option)? "font-semibold" : "text-gray-600"
                 } hover:bg-gray-50`}
@@ -383,6 +389,8 @@ const yearLabels: Record<YearLevel, string> = {
         <div className="relative">
           <button
             onClick={() => setOpenDropdown(openDropdown === "year" ? null : "year")}
+
+
             className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all ${
               filters.year.length > 0
                 ? "border-orange-400 bg-orange-50 text-orange-600"
@@ -413,7 +421,7 @@ const yearLabels: Record<YearLevel, string> = {
               {(Object.keys(yearLabels) as YearLevel[]).map((option) => (
                 <button
                   key={option}
-                  onClick={() => updateFilter("year", option)}
+                  onClick={() => updateFilter({ key: "year", value: option })}
                   className={`w-full text-left px-4 py-2 text-sm transition-colors hover:bg-orange-50 hover:text-orange-600 ${
                     filters.year.includes(option) ? "text-orange-500 font-semibold bg-orange-50" : "text-gray-600"
                   }`}

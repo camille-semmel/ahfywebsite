@@ -50,14 +50,14 @@ const EngagementReportDialog = ({
     try {
       // Fetch exercise feedback (therapy sessions)
       const { data: feedbackData, error: feedbackError } = await supabase
-        .from("public.exercise_feedback")
+        .schema("public").from("exercise_feedback")
         .select("user_id, therapist_exercise_id, mediation_id");
 
       if (feedbackError) throw feedbackError;
 
       // Fetch emotion usage logs (self-assessments)
       const { data: emotionData, error: emotionError } = await supabase
-        .from("public.emotion_usage_logs")
+        .schema("public").from("emotion_usage_logs")
         .select("user_id, need_id")
         .eq("is_deleted", false);
 
@@ -65,7 +65,7 @@ const EngagementReportDialog = ({
 
       // Fetch student data from userspub table
       const { data: studentData, error: studentError } = await supabase
-        .from("public.userspub")
+        .schema("public").from("userspub")
         .select("id, first_name, last_name, email, created_at");
 
       if (studentError) throw studentError;

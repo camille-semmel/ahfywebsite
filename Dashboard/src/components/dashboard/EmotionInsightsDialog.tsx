@@ -45,7 +45,7 @@ const EmotionInsightsDialog = ({
     try {
       // Fetch emotion usage logs
       const { data: emotionLogs, error: logsError } = await supabase
-        .from("public.emotion_usage_logs")
+        .schema("public").from("emotion_usage_logs")
         .select("id, created_at, user_id, need_id, trigger_detail")
         .eq("is_deleted", false)
         .order("created_at", { ascending: false });
@@ -54,21 +54,21 @@ const EmotionInsightsDialog = ({
 
       // Fetch needs with emotion relationships
       const { data: needs, error: needsError } = await supabase
-        .from("public.need")
+        .schema("public").from("need")
         .select("id, name, emotion_id");
 
       if (needsError) throw needsError;
 
       // Fetch emotions
       const { data: emotions, error: emotionsError } = await supabase
-        .from("public.emotion")
+        .schema("public").from("emotion")
         .select("id, name");
 
       if (emotionsError) throw emotionsError;
 
       // Fetch student data from userspub table
       const { data: students, error: studentsError } = await supabase
-        .from("public.userspub")
+        .schema("public").from("userspub")
         .select("id, first_name, last_name, email");
 
       if (studentsError) throw studentsError;

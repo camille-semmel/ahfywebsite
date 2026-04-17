@@ -211,6 +211,20 @@ const Signup = () => {
                   )}
                 </Button>
               </div>
+                            <ul className="text-xs text-muted-foreground space-y-1 list-none mt-1">
+                <li className={/[A-Z]/.test(formData.password) ? "text-green-500" : ""}>
+                  {/[A-Z]/.test(formData.password) ? "✓" : "•"} One uppercase letter
+                </li>
+                <li className={/[0-9]/.test(formData.password) ? "text-green-500" : ""}>
+                  {/[0-9]/.test(formData.password) ? "✓" : "•"} One number
+                </li>
+                <li className={/[^A-Za-z0-9]/.test(formData.password) ? "text-green-500" : ""}>
+                  {/[^A-Za-z0-9]/.test(formData.password) ? "✓" : "•"} One special character
+                </li>
+                <li className={formData.password.length >= 6 ? "text-green-500" : ""}>
+                  {formData.password.length >= 6 ? "✓" : "•"} At least 6 characters
+                </li>
+              </ul>
               {errors.password && (
                 <p className="text-sm text-destructive">{errors.password}</p>
               )}

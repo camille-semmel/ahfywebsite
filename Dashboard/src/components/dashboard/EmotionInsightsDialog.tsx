@@ -42,36 +42,39 @@ const EmotionInsightsDialog = ({
 
   const fetchReportData = async () => {
     setLoading(true);
-    try {
-      // Fetch emotion usage logs
-      const { data: emotionLogs, error: logsError } = await supabase
-        .from("public.emotion_usage_logs")
+  try {
+    const [
+      { data: emotionLogs, error: logsError },
+      { data: needs, error: needsError },
+      { data: emotions, error: emotionsError },
+      { data: students, error: studentsError },
+    ] = await Promise.all([
+      supabase
+        .schema("public")
+        .from("emotion_usage_logs")
         .select("id, created_at, user_id, need_id, trigger_detail")
         .eq("is_deleted", false)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false }),
+      supabase
+        .schema("public")
+        .from("need")
+        .select("id, name, emotion_id"),
+      supabase
+        .schema("public")
+        .from("emotion")
+        .select("id, name"),
+      supabase
+        .schema("public")
+        .from("userspub")
+        .select("id, first_name, last_name, email"),
+    ]);
 
-      if (logsError) throw logsError;
+    if (logsError) throw logsError;
+    if (needsError) throw needsError;
+    if (emotionsError) throw emotionsError;
+    if (studentsError) throw studentsError;
 
-      // Fetch needs with emotion relationships
-      const { data: needs, error: needsError } = await supabase
-        .from("public.need")
-        .select("id, name, emotion_id");
-
-      if (needsError) throw needsError;
-
-      // Fetch emotions
-      const { data: emotions, error: emotionsError } = await supabase
-        .from("public.emotion")
-        .select("id, name");
-
-      if (emotionsError) throw emotionsError;
-
-      // Fetch student data from userspub table
-      const { data: students, error: studentsError } = await supabase
-        .from("public.userspub")
-        .select("id, first_name, last_name, email");
-
-      if (studentsError) throw studentsError;
+    
 
       // Map user IDs to student names
       const studentMap = new Map(

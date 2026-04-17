@@ -47,28 +47,30 @@ const EngagementReportDialog = ({
 
   const fetchReportData = async () => {
     setLoading(true);
-    try {
-      // Fetch exercise feedback (therapy sessions)
-      const { data: feedbackData, error: feedbackError } = await supabase
-        .schema("public").from("exercise_feedback")
-        .select("user_id, therapist_exercise_id, mediation_id");
-
-      if (feedbackError) throw feedbackError;
-
-      // Fetch emotion usage logs (self-assessments)
-      const { data: emotionData, error: emotionError } = await supabase
-        .schema("public").from("emotion_usage_logs")
+  try {
+    const [
+      { data: feedbackData, error: feedbackError },
+      { data: emotionData, error: emotionError },
+      { data: studentData, error: studentError },
+    ] = await Promise.all([
+      supabase
+        .schema("public")
+        .from("exercise_feedback")
+        .select("user_id, therapist_exercise_id, mediation_id"),
+      supabase
+        .schema("public")
+        .from("emotion_usage_logs")
         .select("user_id, need_id")
-        .eq("is_deleted", false);
+        .eq("is_deleted", false),
+      supabase
+        .schema("public")
+        .from("userspub")
+        .select("id, first_name, last_name, email, created_at"),
+    ]);
 
-      if (emotionError) throw emotionError;
-
-      // Fetch student data from userspub table
-      const { data: studentData, error: studentError } = await supabase
-        .schema("public").from("userspub")
-        .select("id, first_name, last_name, email, created_at");
-
-      if (studentError) throw studentError;
+    if (feedbackError) throw feedbackError;
+    if (emotionError) throw emotionError;
+    if (studentError) throw studentError;
 
       // Create activity map by user_id
       const activityMap = new Map<

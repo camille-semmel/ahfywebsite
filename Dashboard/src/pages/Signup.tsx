@@ -211,23 +211,28 @@ const Signup = () => {
                   )}
                 </Button>
               </div>
-                            <ul className="text-xs text-muted-foreground space-y-1 list-none mt-1">
-                <li className={/[A-Z]/.test(formData.password) ? "text-green-500" : ""}>
-                  {/[A-Z]/.test(formData.password) ? "✓" : "•"} One uppercase letter
-                </li>
-                <li className={/[0-9]/.test(formData.password) ? "text-green-500" : ""}>
-                  {/[0-9]/.test(formData.password) ? "✓" : "•"} One number
-                </li>
-                <li className={/[^A-Za-z0-9]/.test(formData.password) ? "text-green-500" : ""}>
-                  {/[^A-Za-z0-9]/.test(formData.password) ? "✓" : "•"} One special character
-                </li>
-                <li className={formData.password.length >= 6 ? "text-green-500" : ""}>
-                  {formData.password.length >= 6 ? "✓" : "•"} At least 6 characters
-                </li>
-              </ul>
-              {errors.password && (
-                <p className="text-sm text-destructive">{errors.password}</p>
-              )}
+                {(() => {
+                  const hasUppercase = /[A-Z]/.test(formData.password);
+                  const hasNumber = /[0-9]/.test(formData.password);
+                  const hasSpecial = /[^A-Za-z0-9]/.test(formData.password);
+                  const hasMinLength = formData.password.length >= 6;
+                  return (
+                    <ul className="text-xs text-muted-foreground space-y-1 list-none mt-1">
+                      <li className={hasUppercase ? "text-green-500" : ""}>
+                        {hasUppercase ? "✓" : "•"} One uppercase letter
+                      </li>
+                      <li className={hasNumber ? "text-green-500" : ""}>
+                        {hasNumber ? "✓" : "•"} One number
+                      </li>
+                      <li className={hasSpecial ? "text-green-500" : ""}>
+                        {hasSpecial ? "✓" : "•"} One special character
+                      </li>
+                      <li className={hasMinLength ? "text-green-500" : ""}>
+                        {hasMinLength ? "✓" : "•"} At least 6 characters
+                      </li>
+                    </ul>
+                     );
+                  })()}
             </div>
 
             {/* Confirm Password */}

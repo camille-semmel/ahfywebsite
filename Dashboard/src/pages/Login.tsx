@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-
 const Login = () => {
   const navigate = useNavigate();
   const { signIn, user, loading: authLoading } = useAuth();
@@ -179,9 +178,7 @@ const Login = () => {
 
           <div className="text-muted-foreground flex justify-center gap-1 text-sm">
             <p>Don't have an account?</p>
-            <a href="/signup" className="text-primary font-medium hover:underline">
-              Sign up
-            </a>
+           <Link to="/signup" className="text-primary font-medium hover:underline">Sign up</Link>
           </div>
         </div>
       </div>

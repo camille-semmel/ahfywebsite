@@ -14,6 +14,7 @@ import { useInstitutionSettings } from "@/hooks/useInstitutionSettings";
 import { useStudents } from "@/hooks/useStudents";
 import { useActiveEngagements } from "@/hooks/useActiveEngagements";
 import { useEmotionDistribution } from "@/hooks/useEmotionDistribution";
+import { useCurrentUserRole } from "@/hooks/useCurrentUserRole";
 
 const Dashboard = () => {
   const [showSeatDialog, setShowSeatDialog] = useState(false);
@@ -23,12 +24,19 @@ const Dashboard = () => {
   const [showRequestFormDialog, setShowRequestFormDialog] = useState(false);
   const [showEngagementGrowth, setShowEngagementGrowth] = useState(false);
 
+  const { data: roleInfo } = useCurrentUserRole();
+
   // Fetch institution settings for total seats
   const { data: institutionSettings, isLoading: isLoadingSettings } = useInstitutionSettings();
-  
-  // Fetch all students to count used seats
+
+  // Fetch students — auto-filtered by house for house_captain via DB function
   const { data: students, isLoading: isLoadingStudents } = useStudents();
-  
+
+  // Derive student IDs for analytics filtering when user is a house captain
+  const houseStudentIds = roleInfo?.isHouseCaptain
+    ? (students?.map((s) => s.user_id).filter(Boolean) as string[]) ?? null
+    : null;
+
   // Calculate dynamic seat data
   const usedSeats = students?.length || 0;
   const totalSeats = institutionSettings?.total_seats || 0;
@@ -36,21 +44,20 @@ const Dashboard = () => {
     used: usedSeats,
     total: totalSeats
   };
- 
-  
-   // Seats ring geometry — guard in case no seats are configured yet
+
+  // Seats ring geometry — guard in case no seats are configured yet
   const seatRingCircumference = 2 * Math.PI * 56;
   const seatRingOffset = studentSeats.total > 0
     ? seatRingCircumference * (1 - studentSeats.used / studentSeats.total)
     : seatRingCircumference;
 
   // Fetch therapeutic engagement data
-  const { data: engagementGrowth, isLoading: isLoadingGrowth } = 
+  const { data: engagementGrowth, isLoading: isLoadingGrowth } =
     useTherapeuticEngagementGrowth();
-  
-  // Fetch active engagements and emotion distribution data
-  const { data: engagementData, isLoading: isLoadingEngagements } = useActiveEngagements();
-  const { data: emotionData, isLoading: isLoadingEmotions } = useEmotionDistribution();
+
+  // Fetch active engagements and emotion distribution — filtered by house for house captains
+  const { data: engagementData, isLoading: isLoadingEngagements } = useActiveEngagements(houseStudentIds);
+  const { data: emotionData, isLoading: isLoadingEmotions } = useEmotionDistribution(houseStudentIds);
 
     const hasWeeklyTrend = (engagementGrowth?.weeklyTrend?.length ?? 0) > 0;
 
@@ -58,6 +65,11 @@ const Dashboard = () => {
     <div className="p-8">
         <div className="max-w-7xl mx-auto space-y-8">
           <h1 className="text-4xl font-bold text-foreground">Welcome back</h1>
+          {roleInfo?.isHouseCaptain && roleInfo.house && (
+            <p className="text-sm text-muted-foreground -mt-4">
+              Showing data for <span className="font-semibold capitalize text-foreground">{roleInfo.house} House</span>
+            </p>
+          )}
 
           {/* Metrics Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

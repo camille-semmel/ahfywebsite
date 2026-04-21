@@ -7,37 +7,40 @@ export interface EmotionData {
   percentage: number;
 }
 
-export const useEmotionDistribution = () => {
+export const useEmotionDistribution = (userIds?: string[] | null) => {
   const [data, setData] = useState<EmotionData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchEmotionData();
-  }, []);
+  }, [JSON.stringify(userIds)]);
 
   const fetchEmotionData = async () => {
     setIsLoading(true);
     try {
-      const { data: emotionLogs, error: logsError } = await supabase
+      let logsQuery = supabase
         .schema("public")
         .from("emotion_usage_logs")
         .select("need_id")
         .eq("is_deleted", false);
 
+      if (userIds && userIds.length > 0) {
+        logsQuery = logsQuery.in("user_id", userIds);
+      }
+
+      const { data: emotionLogs, error: logsError } = await logsQuery;
       if (logsError) throw logsError;
 
       const { data: needs, error: needsError } = await supabase
         .schema("public")
         .from("need")
         .select("id, emotion_id");
-
       if (needsError) throw needsError;
 
       const { data: emotions, error: emotionsError } = await supabase
         .schema("public")
         .from("emotion")
         .select("id, name");
-
       if (emotionsError) throw emotionsError;
 
       const emotionCounts: Record<string, number> = {};
@@ -46,9 +49,7 @@ export const useEmotionDistribution = () => {
 
       emotionLogs?.forEach((log) => {
         const emotionId = needMap.get(log.need_id);
-        const emotionName = emotionId
-          ? emotionMap.get(emotionId) || "Unknown"
-          : "Unknown";
+        const emotionName = emotionId ? emotionMap.get(emotionId) || "Unknown" : "Unknown";
         emotionCounts[emotionName] = (emotionCounts[emotionName] || 0) + 1;
       });
 
@@ -57,8 +58,7 @@ export const useEmotionDistribution = () => {
         .map(([emotion, count]) => ({
           emotion,
           count,
-          percentage:
-            total > 0 ? parseFloat(((count / total) * 100).toFixed(1)) : 0,
+          percentage: total > 0 ? parseFloat(((count / total) * 100).toFixed(1)) : 0,
         }))
         .sort((a, b) => b.count - a.count)
         .slice(0, 3);

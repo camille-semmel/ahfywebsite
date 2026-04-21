@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Plus, ExternalLink, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useStudents } from "@/hooks/useStudents";
+import { useCurrentUserRole } from "@/hooks/useCurrentUserRole";
 import { PersonalizedLinkDialog } from "@/components/students/PersonalizedLinkDialog";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -28,12 +29,21 @@ interface FilterState {
 }
 
 const Students = () => {
+  const { data: roleInfo } = useCurrentUserRole();
+
   const [filters, setFilters] = useState<FilterState>({
     age: [],
     gender: [],
     house: [],
      year: [],
-  }); 
+  });
+
+  // House captains are locked to their assigned house
+  useEffect(() => {
+    if (roleInfo?.isHouseCaptain && roleInfo.house) {
+      setFilters(prev => ({ ...prev, house: [roleInfo.house!.toLowerCase() as House] }));
+    }
+  }, [roleInfo?.isHouseCaptain, roleInfo?.house]);
 
    const [openDropdown, setOpenDropdown] = useState<"age" | "gender" | "house" | "year" | null>(null);
 
@@ -169,9 +179,16 @@ const yearLabels: Record<YearLevel, string> = {
       <div className="max-w-full mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h1 className="text-4xl font-bold text-primary">
-            Demo School
-          </h1>
+          <div>
+            <h1 className="text-4xl font-bold text-primary">
+              Demo School
+            </h1>
+            {roleInfo?.isHouseCaptain && roleInfo.house && (
+              <p className="mt-1 text-sm text-muted-foreground">
+                Viewing students in <span className="font-semibold capitalize text-foreground">{roleInfo.house} House</span>
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Search Bar */}
@@ -285,13 +302,14 @@ const yearLabels: Record<YearLevel, string> = {
       {/* House Filter */}
       <div className="relative">
         <button
-          onClick={() => setOpenDropdown(openDropdown === "house" ? null : "house")}
+          onClick={() => !roleInfo?.isHouseCaptain && setOpenDropdown(openDropdown === "house" ? null : "house")}
+          disabled={roleInfo?.isHouseCaptain}
+          title={roleInfo?.isHouseCaptain ? `Locked to ${roleInfo.house} house` : undefined}
           className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all ${
             filters.house.length > 0
-
               ? "border-orange-400 bg-orange-50 text-orange-600"
               : "border-gray-300 bg-white text-gray-600 hover:border-orange-300 hover:text-orange-500"
-          }`}
+          } ${roleInfo?.isHouseCaptain ? "opacity-80 cursor-not-allowed" : ""}`}
           style={{ fontFamily: "inherit" }}
         >
           

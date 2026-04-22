@@ -184,44 +184,14 @@ BEGIN
 END $$;
 
 -- ============================================
--- Seed Data  --  CLIENT-SPECIFIC  --  EDIT BEFORE RUNNING
+-- Seed Data
 -- ============================================
--- The rows below define the groups for ONE specific client. Replace them with
--- whatever groups the new client uses before running this file.
+-- Seed rows for public.groups live in:
+--   Dashboard/supabase/sql/seed-data/groups_rows.sql
 --
--- Rules:
---   1. `id` values must be unique integers (recommended: start at 1 and go up).
---   2. `name` is the label shown in the UI.
---   3. Keep the ON CONFLICT (id) DO NOTHING clause — it makes the file safe
---      to re-run without duplicating or overwriting rows.
+-- Run that file after this one to populate the groups table.
+-- For new clients, update groups_rows.sql with the appropriate group names.
 --
--- -----------------------------------------------------------------
--- Currently active seed (Client #1 — a school, using house names)
--- -----------------------------------------------------------------
-DO $$
-DECLARE
-  inserted_count integer;
-BEGIN
-  WITH ins AS (
-    INSERT INTO public.groups (id, name) VALUES
-      (1, 'Cameron'),
-      (2, 'Campbell'),
-      (3, 'Douglas'),
-      (4, 'Gordon'),
-      (5, 'Macgregor'),
-      (6, 'Stewart')
-    ON CONFLICT (id) DO NOTHING
-    RETURNING 1
-  )
-  SELECT count(*) INTO inserted_count FROM ins;
-
-  IF inserted_count > 0 THEN
-    RAISE NOTICE 'Seeded % group row(s) into public.groups.', inserted_count;
-  ELSE
-    RAISE NOTICE 'Seed rows for public.groups already present. Skipping seed.';
-  END IF;
-END $$;
-
 -- -----------------------------------------------------------------
 -- EXAMPLE — University client (faculty names)
 -- Uncomment this block (and comment out the school block above) if the

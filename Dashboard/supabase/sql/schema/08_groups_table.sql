@@ -1,16 +1,14 @@
 -- ============================================
 -- Schema Configuration
 -- ============================================
--- SCHEMA_NAME: public  <-- CHANGE THIS VALUE, then Find/Replace all 'public' below
---
--- TO CHANGE SCHEMA:
--- 1. Update SCHEMA_NAME above
--- 2. Find and replace ALL occurrences of 'public' with your schema name in this file
---
--- NOTE: This table (groups) intentionally lives in the public schema so it can
+-- NOTE: Do NOT globally find/replace `public` in this file.
+--       The `groups` table intentionally lives in the `public` schema so it can
 --       be referenced from other schemas (e.g. demo.student_group_relationships).
 --       Only move it if you also update every cross-schema foreign key that
 --       points to public.groups.
+--
+-- This file is intentionally pinned to `public` and is an exception to any
+-- schema-customization guidance used elsewhere in the project.
 -- ============================================
 
 -- ============================================
@@ -115,61 +113,73 @@ BEGIN
   END IF;
 END $$;
 
--- Allow authenticated users to insert groups
+-- Allow admins and owners to insert groups
 DO $$
 BEGIN
   IF NOT EXISTS (
-    SELECT 1 FROM pg_policies 
-    WHERE schemaname = 'public' 
-    AND tablename = 'groups' 
-    AND policyname = 'Allow authenticated users to insert groups'
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public'
+    AND tablename = 'groups'
+    AND policyname = 'Allow admins and owners to insert groups'
   ) THEN
-    CREATE POLICY "Allow authenticated users to insert groups"
+    CREATE POLICY "Allow admins and owners to insert groups"
     ON public.groups FOR INSERT
     TO authenticated
-    WITH CHECK (true);
-    RAISE NOTICE 'Policy "Allow authenticated users to insert groups" created successfully.';
+    WITH CHECK (
+      demo.has_role(auth.uid(), 'admin'::demo.app_role) OR
+      demo.has_role(auth.uid(), 'owner'::demo.app_role)
+    );
+    RAISE NOTICE 'Policy "Allow admins and owners to insert groups" created successfully.';
   ELSE
-    RAISE NOTICE 'Policy "Allow authenticated users to insert groups" already exists. Skipping creation.';
+    RAISE NOTICE 'Policy "Allow admins and owners to insert groups" already exists. Skipping creation.';
   END IF;
 END $$;
 
--- Allow authenticated users to update groups
+-- Allow admins and owners to update groups
 DO $$
 BEGIN
   IF NOT EXISTS (
-    SELECT 1 FROM pg_policies 
-    WHERE schemaname = 'public' 
-    AND tablename = 'groups' 
-    AND policyname = 'Allow authenticated users to update groups'
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public'
+    AND tablename = 'groups'
+    AND policyname = 'Allow admins and owners to update groups'
   ) THEN
-    CREATE POLICY "Allow authenticated users to update groups"
+    CREATE POLICY "Allow admins and owners to update groups"
     ON public.groups FOR UPDATE
     TO authenticated
-    USING (true)
-    WITH CHECK (true);
-    RAISE NOTICE 'Policy "Allow authenticated users to update groups" created successfully.';
+    USING (
+      demo.has_role(auth.uid(), 'admin'::demo.app_role) OR
+      demo.has_role(auth.uid(), 'owner'::demo.app_role)
+    )
+    WITH CHECK (
+      demo.has_role(auth.uid(), 'admin'::demo.app_role) OR
+      demo.has_role(auth.uid(), 'owner'::demo.app_role)
+    );
+    RAISE NOTICE 'Policy "Allow admins and owners to update groups" created successfully.';
   ELSE
-    RAISE NOTICE 'Policy "Allow authenticated users to update groups" already exists. Skipping creation.';
+    RAISE NOTICE 'Policy "Allow admins and owners to update groups" already exists. Skipping creation.';
   END IF;
 END $$;
 
--- Allow authenticated users to delete groups
+-- Allow admins and owners to delete groups
 DO $$
 BEGIN
   IF NOT EXISTS (
-    SELECT 1 FROM pg_policies 
-    WHERE schemaname = 'public' 
-    AND tablename = 'groups' 
-    AND policyname = 'Allow authenticated users to delete groups'
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public'
+    AND tablename = 'groups'
+    AND policyname = 'Allow admins and owners to delete groups'
   ) THEN
-    CREATE POLICY "Allow authenticated users to delete groups"
+    CREATE POLICY "Allow admins and owners to delete groups"
     ON public.groups FOR DELETE
     TO authenticated
-    USING (true);
-    RAISE NOTICE 'Policy "Allow authenticated users to delete groups" created successfully.';
+    USING (
+      demo.has_role(auth.uid(), 'admin'::demo.app_role) OR
+      demo.has_role(auth.uid(), 'owner'::demo.app_role)
+    );
+    RAISE NOTICE 'Policy "Allow admins and owners to delete groups" created successfully.';
   ELSE
-    RAISE NOTICE 'Policy "Allow authenticated users to delete groups" already exists. Skipping creation.';
+    RAISE NOTICE 'Policy "Allow admins and owners to delete groups" already exists. Skipping creation.';
   END IF;
 END $$;
 

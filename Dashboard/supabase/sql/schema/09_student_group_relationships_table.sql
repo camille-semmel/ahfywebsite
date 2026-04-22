@@ -85,78 +85,90 @@ END $$;
 -- RLS Policies
 -- ============================================
 
--- Allow authenticated users to select student-group relationships
+-- Allow registered users to select student-group relationships
 DO $$
 BEGIN
   IF NOT EXISTS (
-    SELECT 1 FROM pg_policies 
-    WHERE schemaname = 'demo' 
-    AND tablename = 'student_group_relationships' 
-    AND policyname = 'sgr_select_for_authenticated'
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'demo'
+    AND tablename = 'student_group_relationships'
+    AND policyname = 'Registered users can view student-group relationships'
   ) THEN
-    CREATE POLICY sgr_select_for_authenticated
+    CREATE POLICY "Registered users can view student-group relationships"
     ON demo.student_group_relationships FOR SELECT
     TO authenticated
-    USING (true);
-    RAISE NOTICE 'Policy sgr_select_for_authenticated created successfully.';
+    USING (demo.is_registered_user(auth.uid()));
+    RAISE NOTICE 'Policy "Registered users can view student-group relationships" created successfully.';
   ELSE
-    RAISE NOTICE 'Policy sgr_select_for_authenticated already exists. Skipping creation.';
+    RAISE NOTICE 'Policy "Registered users can view student-group relationships" already exists. Skipping creation.';
   END IF;
 END $$;
 
--- Allow authenticated users to insert student-group relationships
+-- Allow admins and owners to insert student-group relationships
 DO $$
 BEGIN
   IF NOT EXISTS (
-    SELECT 1 FROM pg_policies 
-    WHERE schemaname = 'demo' 
-    AND tablename = 'student_group_relationships' 
-    AND policyname = 'sgr_insert_for_authenticated'
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'demo'
+    AND tablename = 'student_group_relationships'
+    AND policyname = 'Admins and owners can insert student-group relationships'
   ) THEN
-    CREATE POLICY sgr_insert_for_authenticated
+    CREATE POLICY "Admins and owners can insert student-group relationships"
     ON demo.student_group_relationships FOR INSERT
     TO authenticated
-    WITH CHECK (true);
-    RAISE NOTICE 'Policy sgr_insert_for_authenticated created successfully.';
+    WITH CHECK (
+      (demo.has_role(auth.uid(), 'admin'::demo.app_role) OR
+       demo.has_role(auth.uid(), 'owner'::demo.app_role))
+      AND demo.is_registered_user(auth.uid())
+    );
+    RAISE NOTICE 'Policy "Admins and owners can insert student-group relationships" created successfully.';
   ELSE
-    RAISE NOTICE 'Policy sgr_insert_for_authenticated already exists. Skipping creation.';
+    RAISE NOTICE 'Policy "Admins and owners can insert student-group relationships" already exists. Skipping creation.';
   END IF;
 END $$;
 
--- Allow authenticated users to update student-group relationships
+-- Allow admins and owners to update student-group relationships
 DO $$
 BEGIN
   IF NOT EXISTS (
-    SELECT 1 FROM pg_policies 
-    WHERE schemaname = 'demo' 
-    AND tablename = 'student_group_relationships' 
-    AND policyname = 'sgr_update_for_authenticated'
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'demo'
+    AND tablename = 'student_group_relationships'
+    AND policyname = 'Admins and owners can update student-group relationships'
   ) THEN
-    CREATE POLICY sgr_update_for_authenticated
+    CREATE POLICY "Admins and owners can update student-group relationships"
     ON demo.student_group_relationships FOR UPDATE
     TO authenticated
-    USING (true);
-    RAISE NOTICE 'Policy sgr_update_for_authenticated created successfully.';
+    USING (
+      (demo.has_role(auth.uid(), 'admin'::demo.app_role) OR
+       demo.has_role(auth.uid(), 'owner'::demo.app_role))
+      AND demo.is_registered_user(auth.uid())
+    );
+    RAISE NOTICE 'Policy "Admins and owners can update student-group relationships" created successfully.';
   ELSE
-    RAISE NOTICE 'Policy sgr_update_for_authenticated already exists. Skipping creation.';
+    RAISE NOTICE 'Policy "Admins and owners can update student-group relationships" already exists. Skipping creation.';
   END IF;
 END $$;
 
--- Allow authenticated users to delete student-group relationships
+-- Allow admins and owners to delete student-group relationships
 DO $$
 BEGIN
   IF NOT EXISTS (
-    SELECT 1 FROM pg_policies 
-    WHERE schemaname = 'demo' 
-    AND tablename = 'student_group_relationships' 
-    AND policyname = 'sgr_delete_for_authenticated'
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'demo'
+    AND tablename = 'student_group_relationships'
+    AND policyname = 'Admins and owners can delete student-group relationships'
   ) THEN
-    CREATE POLICY sgr_delete_for_authenticated
+    CREATE POLICY "Admins and owners can delete student-group relationships"
     ON demo.student_group_relationships FOR DELETE
     TO authenticated
-    USING (true);
-    RAISE NOTICE 'Policy sgr_delete_for_authenticated created successfully.';
+    USING (
+      (demo.has_role(auth.uid(), 'admin'::demo.app_role) OR
+       demo.has_role(auth.uid(), 'owner'::demo.app_role))
+      AND demo.is_registered_user(auth.uid())
+    );
+    RAISE NOTICE 'Policy "Admins and owners can delete student-group relationships" created successfully.';
   ELSE
-    RAISE NOTICE 'Policy sgr_delete_for_authenticated already exists. Skipping creation.';
+    RAISE NOTICE 'Policy "Admins and owners can delete student-group relationships" already exists. Skipping creation.';
   END IF;
 END $$;

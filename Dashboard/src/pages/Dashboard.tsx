@@ -36,7 +36,14 @@ const Dashboard = () => {
     used: usedSeats,
     total: totalSeats
   };
+ 
   
+   // Seats ring geometry — guard in case no seats are configured yet
+  const seatRingCircumference = 2 * Math.PI * 56;
+  const seatRingOffset = studentSeats.total > 0
+    ? seatRingCircumference * (1 - studentSeats.used / studentSeats.total)
+    : seatRingCircumference;
+
   // Fetch therapeutic engagement data
   const { data: engagementGrowth, isLoading: isLoadingGrowth } = 
     useTherapeuticEngagementGrowth();
@@ -44,6 +51,8 @@ const Dashboard = () => {
   // Fetch active engagements and emotion distribution data
   const { data: engagementData, isLoading: isLoadingEngagements } = useActiveEngagements();
   const { data: emotionData, isLoading: isLoadingEmotions } = useEmotionDistribution();
+
+    const hasWeeklyTrend = (engagementGrowth?.weeklyTrend?.length ?? 0) > 0;
 
   return (
     <div className="p-8">
@@ -79,10 +88,8 @@ const Dashboard = () => {
                         stroke="hsl(var(--primary))"
                         strokeWidth="12"
                         fill="none"
-                        strokeDasharray={`${2 * Math.PI * 56}`}
-                        strokeDashoffset={`${
-                          2 * Math.PI * 56 * (1 - studentSeats.used / studentSeats.total)
-                        }`}
+                        strokeDasharray={`${seatRingCircumference}`}
+                        strokeDashoffset={`${seatRingOffset}`}
                         className="transition-all duration-1000"
                       />
                     </svg>
@@ -92,6 +99,11 @@ const Dashboard = () => {
                       </span>
                     </div>
                   </div>
+                  {studentSeats.total === 0 && (
+                    <p className="text-xs text-muted-foreground text-center w-32">
+                      No seats purchased yet
+                    </p>
+                  )}
                 </div>
 
                 <Button
@@ -198,31 +210,39 @@ const Dashboard = () => {
               ) : (
                 <div className="space-y-4">
                   {/* Bar Chart - Last 5 Weeks */}
-                  <div className="h-32 flex items-end gap-2">
-                    {engagementGrowth?.weeklyTrend.slice(0, 5).reverse().map((week, index) => {
-                      const maxActivities = Math.max(
-                        ...engagementGrowth.weeklyTrend.slice(0, 5).map((w) => w.total_activities)
-                      );
-                      const heightPercentage = maxActivities > 0 
-                        ? (week.total_activities / maxActivities) * 100 
-                        : 0;
+                  {hasWeeklyTrend ? (
+                    <div className="h-32 flex items-end gap-2">
+                      {engagementGrowth!.weeklyTrend.slice(0, 5).reverse().map((week, index) => {
+                        const maxActivities = Math.max(
+                          ...engagementGrowth!.weeklyTrend.slice(0, 5).map((w) => w.total_activities)
+                        );
+                        const heightPercentage = maxActivities > 0 
+                          ? (week.total_activities / maxActivities) * 100 
+                          : 0;
 
-                      return (
-                        <div
-                          key={week.week_start}
-                          className="flex-1 bg-chart-primary rounded-t-lg transition-all hover:opacity-80 cursor-pointer group relative min-h-[20px]"
-                          style={{
-                            height: `${Math.max(heightPercentage, 15)}%`,
-                          }}
-                        >
-                          {/* Tooltip on hover */}
-                          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-popover text-popover-foreground text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-lg">
-                            {new Date(week.week_start).toLocaleDateString()}: {week.total_activities} activities
+                        return (
+                          <div
+                            key={week.week_start}
+                            className="flex-1 bg-chart-primary rounded-t-lg transition-all hover:opacity-80 cursor-pointer group relative min-h-[20px]"
+                            style={{
+                              height: `${Math.max(heightPercentage, 15)}%`,
+                            }}
+                          >
+                            {/* Tooltip on hover */}
+                            <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-popover text-popover-foreground text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-lg">
+                              {new Date(week.week_start).toLocaleDateString()}: {week.total_activities} activities
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="h-32 flex items-center justify-center">
+                      <span className="text-sm text-muted-foreground">
+                        No engagement activity yet
+                      </span>
+                    </div>
+                  )}
 
                   {/* Growth Metric */}
                   <div className="space-y-2">

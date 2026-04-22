@@ -38,7 +38,7 @@ const Dashboard = () => {
   };
  
   
-   // Seats ring geometry — guard incase no seats are configured yet 
+   // Seats ring geometry — guard in case no seats are configured yet
   const seatRingCircumference = 2 * Math.PI * 56;
   const seatRingOffset = studentSeats.total > 0
     ? seatRingCircumference * (1 - studentSeats.used / studentSeats.total)
@@ -98,12 +98,12 @@ const Dashboard = () => {
                         {studentSeats.used}/{studentSeats.total}
                       </span>
                     </div>
-                      {studentSeats.total === 0 && (
-                    <p className="text-xs text-muted-foreground text-center">
+                  </div>
+                  {studentSeats.total === 0 && (
+                    <p className="text-xs text-muted-foreground text-center w-32">
                       No seats purchased yet
                     </p>
-                    )}
-                  </div>
+                  )}
                 </div>
 
                 <Button

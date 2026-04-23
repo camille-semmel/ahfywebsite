@@ -36,11 +36,17 @@ export const TherapistAssignmentDropdown = ({
         </SelectValue>
       </SelectTrigger>
       <SelectContent>
-        {therapists?.map((therapist) => (
-          <SelectItem key={therapist.id} value={therapist.id}>
-            {therapist.first_name} {therapist.last_name}
+        {!therapists?.length ? (
+          <SelectItem value="none" disabled>
+            No therapists available
           </SelectItem>
-        ))}
+        ) : (
+          therapists.map((therapist) => (
+            <SelectItem key={therapist.id} value={therapist.id}>
+              {therapist.first_name} {therapist.last_name}
+            </SelectItem>
+          ))
+        )}
       </SelectContent>
     </Select>
   );

@@ -123,7 +123,12 @@ const Therapist = () => {
                 {loadingStudents ? (
                   <Skeleton className="h-12 w-20" />
                 ) : (
-                  <p className="text-4xl font-bold text-primary">{kpis.needingAttention}</p>
+                  <>
+                    <p className="text-4xl font-bold text-primary">{kpis.needingAttention}</p>
+                    {studentsUnderCare?.length === 0 && (
+                      <p className="text-sm text-muted-foreground mt-1">No student assignments yet</p>
+                    )}
+                  </>
                 )}
               </CardContent>
             </Card>
@@ -135,7 +140,12 @@ const Therapist = () => {
                 {loadingStudents ? (
                   <Skeleton className="h-12 w-20" />
                 ) : (
-                  <p className="text-4xl font-bold text-primary">{kpis.scheduled}</p>
+                  <>
+                    <p className="text-4xl font-bold text-primary">{kpis.scheduled}</p>
+                    {studentsUnderCare?.length === 0 && (
+                      <p className="text-sm text-muted-foreground mt-1">No student assignments yet</p>
+                    )}
+                  </>
                 )}
               </CardContent>
             </Card>

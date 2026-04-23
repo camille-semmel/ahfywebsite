@@ -18,7 +18,7 @@ export const TherapistAssignmentDropdown = ({
   currentTherapistId,
   currentTherapistName,
 }: TherapistAssignmentDropdownProps) => {
-  const { data: therapists } = useTherapistTeam();
+  const { data: therapists, isLoading, isError } = useTherapistTeam();
   const assignTherapist = useAssignTherapist();
 
   const handleAssign = (therapistId: string) => {
@@ -36,12 +36,20 @@ export const TherapistAssignmentDropdown = ({
         </SelectValue>
       </SelectTrigger>
       <SelectContent>
-        {!therapists?.length ? (
+        {isLoading ? (
+          <SelectItem value="loading" disabled>
+            Loading...
+          </SelectItem>
+        ) : isError ? (
+          <SelectItem value="error" disabled>
+            Failed to load therapists
+          </SelectItem>
+        ) : therapists?.length === 0 ? (
           <SelectItem value="none" disabled>
             No therapists available
           </SelectItem>
         ) : (
-          therapists.map((therapist) => (
+          therapists!.map((therapist) => (
             <SelectItem key={therapist.id} value={therapist.id}>
               {therapist.first_name} {therapist.last_name}
             </SelectItem>

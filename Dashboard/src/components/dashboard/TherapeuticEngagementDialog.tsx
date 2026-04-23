@@ -53,7 +53,11 @@ const TherapeuticEngagementDialog = ({
           <div className="flex items-center justify-center py-12">
             <Loader2 className="w-8 h-8 animate-spin text-primary" />
           </div>
-        ) : engagementGrowth ? (
+        ) : !engagementGrowth ? (
+          <div className="flex items-center justify-center py-12">
+            <p className="text-sm text-muted-foreground">No engagement data yet</p>
+          </div>
+        ) : (
           <div className="space-y-6" id="printable-content">
             {/* Summary Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -189,7 +193,7 @@ const TherapeuticEngagementDialog = ({
               </CardContent>
             </Card>
           </div>
-        ) : null}
+        )}
 
         <DialogFooter className="gap-2 no-print">
           <Button variant="outline" onClick={handlePrint} disabled={isLoading}>

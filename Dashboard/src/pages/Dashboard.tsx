@@ -176,11 +176,11 @@ const Dashboard = () => {
                   <span className="text-sm text-muted-foreground">No emotion data available</span>
                 </div>
               ) : (
-                <>
-                  <div className="space-y-3">
+                <div className="flex flex-col flex-1">
+                  <div className="flex flex-col gap-6 flex-1 justify-center">
                     {emotionData.map((emotion) => (
                       <div key={emotion.emotion}>
-                        <div className="flex justify-between items-center">
+                        <div className="flex justify-between items-center mb-1">
                           <span className="text-sm text-muted-foreground">{emotion.emotion}</span>
                           <span className="text-sm font-medium">{emotion.count}</span>
                         </div>
@@ -189,15 +189,15 @@ const Dashboard = () => {
                     ))}
                   </div>
 
-                  <Button 
-                    variant="outline" 
-                    className="w-full mt-2" 
+                  <Button
+                    variant="outline"
+                    className="w-full mt-6"
                     size="lg"
                     onClick={() => setShowEmotionInsights(true)}
                   >
                     View insights
                   </Button>
-                </>
+                </div>
               )}
             </MetricCard>
 

@@ -16,7 +16,7 @@ interface PersonalizedLinkDialogProps {
   studentName: string;
 }
 
-const TESTFLIGHT_LINK = 'https://testflight.apple.com/join/vRd5t9Mg';
+const APP_STORE_LINK = 'https://apps.apple.com/us/app/ahfy/id6747704823';
 
 export const PersonalizedLinkDialog = ({
   open,
@@ -26,7 +26,7 @@ export const PersonalizedLinkDialog = ({
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(TESTFLIGHT_LINK);
+    await navigator.clipboard.writeText(APP_STORE_LINK);
     setCopied(true);
     toast.success('Link copied to clipboard!');
     setTimeout(() => setCopied(false), 2000);
@@ -38,13 +38,13 @@ export const PersonalizedLinkDialog = ({
         <DialogHeader>
           <DialogTitle>App Download Link</DialogTitle>
           <DialogDescription>
-            Share this TestFlight link with {studentName} to download the app
+            Share this App Store link with {studentName} to download the app
           </DialogDescription>
         </DialogHeader>
         <div className="flex items-center space-x-2">
           <div className="grid flex-1 gap-2">
             <div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-              {TESTFLIGHT_LINK}
+              {APP_STORE_LINK}
             </div>
           </div>
           <Button size="sm" className="px-3" onClick={handleCopy}>

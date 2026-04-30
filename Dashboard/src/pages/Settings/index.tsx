@@ -28,12 +28,12 @@ const SettingsIndex = () => {
       title: t('security_privacy'),
       path: '/settings/security',
     },
-    {
-      id: 'language',
-      icon: Languages,
-      title: t('language'),
-      path: '/settings/language',
-    },
+    // {
+    //   id: 'language',
+    //   icon: Languages,
+    //   title: t('language'),
+    //   path: '/settings/language',
+    // },
     {
       id: 'profile',
       icon: User,

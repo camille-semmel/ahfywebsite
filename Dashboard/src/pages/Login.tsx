@@ -40,13 +40,22 @@ const Login = () => {
     setLoading(true);
     setIsVerifyingMfa(true);  // Set this FIRST to block useEffect redirect
 
-    // Sign in with email and password (creates AAL1 session)
-    const { error } = await signIn(email, password);
+    let signInError: any = null;
+    try {
+      const result = await signIn(email, password);
+      signInError = result.error;
+    } catch (err: any) {
+      signInError = err;
+    }
 
-    if (error) {
+    if (signInError) {
+      const message =
+        signInError.message === "Invalid login credentials"
+          ? "Invalid email or password"
+          : signInError.message || "Failed to sign in. Please try again.";
       setLoading(false);
       setIsVerifyingMfa(false);  // Reset on error
-      toast.error(error.message || "Failed to sign in");
+      toast.error(message);
       return;
     }
 
@@ -117,23 +126,23 @@ const Login = () => {
           </div>
           
           <form onSubmit={handleLogin} className="flex w-full flex-col gap-4">
-            <Input 
-              type="email" 
-              placeholder="Email" 
+            <Input
+              type="email"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required 
+              required
               disabled={showMfaChallenge}
             />
-            <Input 
-              type="password" 
-              placeholder="Password" 
+            <Input
+              type="password"
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required 
+              required
               disabled={showMfaChallenge}
             />
-            
+
             {showMfaChallenge && (
               <div className="space-y-2">
                 <Label htmlFor="mfa-code">Authentication Code</Label>

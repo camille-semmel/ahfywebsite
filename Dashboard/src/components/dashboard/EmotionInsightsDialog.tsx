@@ -124,7 +124,12 @@ const EmotionInsightsDialog = ({
             studentName,
             emotion: emotionName,
             date: new Date(log.created_at).toLocaleDateString(),
-            trigger: log.trigger_detail || "Not specified",
+            trigger:
+              log.trigger_detail &&
+              log.trigger_detail.trim() !== "" &&
+              log.trigger_detail.trim().toLowerCase() !== "null"
+                ? log.trigger_detail
+                : "Not specified",
           };
         }) || [];
 

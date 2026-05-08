@@ -11,7 +11,18 @@ import { format } from 'date-fns';
 const Profile = () => {
   const navigate = useNavigate();
   const { t } = useI18n();
-  const { data: institution, isLoading } = useInstitutionSettings();
+  const { data: institution, isLoading, isError } = useInstitutionSettings();
+
+  const UNAVAILABLE = 'Unavailable';
+
+  const institutionName = institution?.institution_name || UNAVAILABLE;
+  const totalSeats = institution?.total_seats?.toString() || UNAVAILABLE;
+  const contractEnd = institution?.contract_end_date
+    ? format(new Date(institution.contract_end_date), 'MMMM dd, yyyy')
+    : UNAVAILABLE;
+  const subscriptionPlan = institution?.subscription_plan
+    ? `${institution.subscription_plan}/student/year`
+    : UNAVAILABLE;
 
   return (
     <div className="p-8">
@@ -27,6 +38,12 @@ const Profile = () => {
           <h1 className="text-4xl font-bold text-primary">{t('profile_settings')}</h1>
         </div>
 
+        {isError && (
+          <p className="text-destructive">
+            Error loading institution settings. Please try again later.
+          </p>
+        )}
+
         <Card>
           <CardHeader>
             <CardTitle>{t('university_name')}</CardTitle>
@@ -36,11 +53,7 @@ const Profile = () => {
             {isLoading ? (
               <Skeleton className="h-10 max-w-md" />
             ) : (
-              <Input
-                value={institution?.institution_name || ''}
-                disabled
-                className="max-w-md"
-              />
+              <Input value={institutionName} disabled className="max-w-md" />
             )}
           </CardContent>
         </Card>
@@ -54,11 +67,7 @@ const Profile = () => {
             {isLoading ? (
               <Skeleton className="h-10 max-w-md" />
             ) : (
-              <Input
-                value={institution?.total_seats?.toString() || ''}
-                disabled
-                className="max-w-md"
-              />
+              <Input value={totalSeats} disabled className="max-w-md" />
             )}
           </CardContent>
         </Card>
@@ -72,11 +81,7 @@ const Profile = () => {
             {isLoading ? (
               <Skeleton className="h-10 max-w-md" />
             ) : (
-              <Input
-                value={institution?.contract_end_date ? format(new Date(institution.contract_end_date), 'MMMM dd, yyyy') : ''}
-                disabled
-                className="max-w-md"
-              />
+              <Input value={contractEnd} disabled className="max-w-md" />
             )}
           </CardContent>
         </Card>
@@ -90,11 +95,7 @@ const Profile = () => {
             {isLoading ? (
               <Skeleton className="h-10 max-w-md" />
             ) : (
-              <Input
-                value={institution?.subscription_plan ? `${institution.subscription_plan}/student/year` : ''}
-                disabled
-                className="max-w-md"
-              />
+              <Input value={subscriptionPlan} disabled className="max-w-md" />
             )}
           </CardContent>
         </Card>

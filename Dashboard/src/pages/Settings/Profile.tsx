@@ -11,17 +11,7 @@ import { format } from 'date-fns';
 const Profile = () => {
   const navigate = useNavigate();
   const { t } = useI18n();
-  const { data: institution, isLoading, error } = useInstitutionSettings();
-
-  if (error) {
-    return (
-      <div className="p-8">
-        <div className="max-w-4xl mx-auto">
-          <p className="text-destructive">Error loading institution settings</p>
-        </div>
-      </div>
-    );
-  }
+  const { data: institution, isLoading } = useInstitutionSettings();
 
   return (
     <div className="p-8">

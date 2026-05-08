@@ -49,10 +49,14 @@ const Login = () => {
     }
 
     if (signInError) {
-      const message =
-        signInError.message === "Invalid login credentials"
-          ? "Invalid email or password"
-          : signInError.message || "Failed to sign in. Please try again.";
+      // Detect invalid-credentials via stable fields (code/status) rather than
+      // matching the upstream message text, which can change between SDK versions.
+      const isInvalidCredentials =
+        signInError.code === "invalid_credentials" ||
+        signInError.status === 400;
+      const message = isInvalidCredentials
+        ? "Invalid email or password"
+        : signInError.message || "Failed to sign in. Please try again.";
       setLoading(false);
       setIsVerifyingMfa(false);  // Reset on error
       toast.error(message);

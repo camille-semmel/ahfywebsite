@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { AUTH_ERROR_CODES } from "@/constants/auth";
+
 const Login = () => {
   const navigate = useNavigate();
   const { signIn, user, loading: authLoading } = useAuth();
@@ -52,7 +54,7 @@ const Login = () => {
       // Detect invalid-credentials via stable fields (code/status) rather than
       // matching the upstream message text, which can change between SDK versions.
       const isInvalidCredentials =
-        signInError.code === "invalid_credentials" ||
+        signInError.code === AUTH_ERROR_CODES.INVALID_CREDENTIALS ||
         signInError.status === 400;
       const message = isInvalidCredentials
         ? "Invalid email or password"

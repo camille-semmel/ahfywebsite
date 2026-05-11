@@ -188,66 +188,19 @@ const Team = () => {
     }
   };
 
-  const handleGenerateLink = async () => {
-    try {
-      // Generate unique token
-      const token =
-        Math.random().toString(36).substring(2, 15) +
-        Math.random().toString(36).substring(2, 15);
+  const handleGenerateLink = () => {
+    const link = `${window.location.origin}/dashboard/`;
 
-      const link = `${window.location.origin}/shared/${token}`;
+    setGeneratedLink(link);
 
-      // Get current user
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+    toast({
+      title: "Link generated",
+      description: "Your shareable link is ready to copy",
+    });
 
-      // Store link information in database with actual name and email
-      const { error } = await supabase
-        .from("university_portal_access_data")
-        .insert({
-          first_name: firstName.trim(),
-          email: email.trim().toLowerCase(),
-          access_level: access,
-          access_method: "link",
-          shared_link: token,
-          invited_by: user?.id,
-        });
-
-      if (error) {
-        if (error.code === "23505") {
-          toast({
-            title: "Email already exists",
-            description: "This email is already associated with a team member",
-            variant: "destructive",
-          });
-          return;
-        }
-        throw error;
-      }
-
-      setGeneratedLink(link);
-
-      toast({
-        title: "Link generated",
-        description: "Your shareable link is ready to copy",
-      });
-
-      // Clear form
-      setFirstName("");
-      setEmail("");
-      setAccess("view");
-
-      // Refresh the list
-      fetchTeamMembers();
-    } catch (error) {
-      console.error("Error generating link:", error);
-      toast({
-        title: "Generation failed",
-        description: "Failed to generate shareable link",
-        variant: "destructive",
-      });
-    }
+    setFirstName("");
+    setEmail("");
+    setAccess("view");
   };
 
   const handleCopyLink = async () => {

@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { AUTH_ERROR_CODES } from "@/constants/auth";
+
 const Login = () => {
   const navigate = useNavigate();
   const { signIn, user, loading: authLoading } = useAuth();
@@ -40,13 +42,26 @@ const Login = () => {
     setLoading(true);
     setIsVerifyingMfa(true);  // Set this FIRST to block useEffect redirect
 
-    // Sign in with email and password (creates AAL1 session)
-    const { error } = await signIn(email, password);
+    let signInError: any = null;
+    try {
+      const result = await signIn(email, password);
+      signInError = result.error;
+    } catch (err: any) {
+      signInError = err;
+    }
 
-    if (error) {
+    if (signInError) {
+      // Detect invalid-credentials via stable fields (code/status) rather than
+      // matching the upstream message text, which can change between SDK versions.
+      const isInvalidCredentials =
+        signInError.code === AUTH_ERROR_CODES.INVALID_CREDENTIALS ||
+        signInError.status === 400;
+      const message = isInvalidCredentials
+        ? "Invalid email or password"
+        : signInError.message || "Failed to sign in. Please try again.";
       setLoading(false);
       setIsVerifyingMfa(false);  // Reset on error
-      toast.error(error.message || "Failed to sign in");
+      toast.error(message);
       return;
     }
 
@@ -117,23 +132,23 @@ const Login = () => {
           </div>
           
           <form onSubmit={handleLogin} className="flex w-full flex-col gap-4">
-            <Input 
-              type="email" 
-              placeholder="Email" 
+            <Input
+              type="email"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required 
+              required
               disabled={showMfaChallenge}
             />
-            <Input 
-              type="password" 
-              placeholder="Password" 
+            <Input
+              type="password"
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required 
+              required
               disabled={showMfaChallenge}
             />
-            
+
             {showMfaChallenge && (
               <div className="space-y-2">
                 <Label htmlFor="mfa-code">Authentication Code</Label>

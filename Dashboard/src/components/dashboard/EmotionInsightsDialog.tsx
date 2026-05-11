@@ -120,6 +120,9 @@ const EmotionInsightsDialog = ({
             ? emotionMap.get(emotionId) || "Unknown"
             : "Unknown";
           const studentName = studentMap.get(log.user_id) || "Unknown Student";
+          const normalizedTrigger = log.trigger_detail?.trim();
+          const hasTrigger =
+            !!normalizedTrigger && normalizedTrigger.toLowerCase() !== "null";
 
           return {
             studentName,

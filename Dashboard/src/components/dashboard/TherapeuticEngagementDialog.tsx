@@ -13,6 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useTherapeuticEngagementGrowth } from "@/lib/services/therapeuticEngagement";
 import { generateTherapeuticEngagementPDF } from "@/lib/pdf/therapeuticEngagementPdf";
 import { toast } from "@/hooks/use-toast";
+import { format } from "date-fns";
 
 interface TherapeuticEngagementDialogProps {
   open: boolean;
@@ -45,7 +46,7 @@ const TherapeuticEngagementDialog = ({
         <DialogHeader>
           <DialogTitle>Therapeutic Engagement Growth Insights</DialogTitle>
           <DialogDescription>
-            Generated on {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}
+            Generated on {format(new Date(), "dd/MM/yyyy")} at {new Date().toLocaleTimeString()}
           </DialogDescription>
         </DialogHeader>
 
@@ -170,10 +171,10 @@ const TherapeuticEngagementDialog = ({
                     {engagementGrowth.weeklyTrend.map((week) => (
                       <TableRow key={week.week_start}>
                         <TableCell className="font-medium">
-                          {new Date(week.week_start).toLocaleDateString()}
+                          {format(new Date(week.week_start), "dd/MM/yyyy")}
                         </TableCell>
                         <TableCell>
-                          {new Date(week.week_end).toLocaleDateString()}
+                          {format(new Date(week.week_end), "dd/MM/yyyy")}
                         </TableCell>
                         <TableCell className="text-right font-bold">
                           {week.total_activities}

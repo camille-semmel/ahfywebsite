@@ -128,7 +128,7 @@ const EmotionInsightsDialog = ({
             studentName,
             emotion: emotionName,
             date: format(new Date(log.created_at), "dd/MM/yyyy"),
-            trigger: log.trigger_detail || "Not specified",
+            trigger: hasTrigger ? normalizedTrigger : "Not specified",
           };
         }) || [];
 

@@ -1,5 +1,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { format } from 'date-fns';
+import { DATE_FORMAT } from '@/constants/dates';
 
 export interface EmotionReportData {
   totalLogs: number;
@@ -27,7 +29,7 @@ export const generateEmotionPDF = (data: EmotionReportData) => {
   
   doc.setFontSize(10);
   doc.setTextColor(100, 100, 100);
-  doc.text(`Generated: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}`, 105, 28, { align: 'center' });
+  doc.text(`Generated: ${format(new Date(), DATE_FORMAT)} at ${new Date().toLocaleTimeString()}`, 105, 28, { align: 'center' });
   
   // Summary
   doc.setFontSize(14);

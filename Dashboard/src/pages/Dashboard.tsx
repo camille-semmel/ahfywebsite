@@ -15,6 +15,7 @@ import { useStudents } from "@/hooks/useStudents";
 import { useActiveEngagements } from "@/hooks/useActiveEngagements";
 import { useEmotionDistribution } from "@/hooks/useEmotionDistribution";
 import { format } from "date-fns";
+import { DATE_FORMAT } from "@/constants/dates";
 
 const Dashboard = () => {
   const [showSeatDialog, setShowSeatDialog] = useState(false);
@@ -231,7 +232,7 @@ const Dashboard = () => {
                           >
                             {/* Tooltip on hover */}
                             <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-popover text-popover-foreground text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-lg">
-                              {format(new Date(week.week_start), "dd/MM/yyyy")}: {week.total_activities} activities
+                              {format(new Date(week.week_start), DATE_FORMAT)}: {week.total_activities} activities
                             </div>
                           </div>
                         );

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Download, Printer, Loader2 } from "lucide-react";
 import { format } from "date-fns";
+import { DATE_FORMAT } from "@/constants/dates";
 import {
   Dialog,
   DialogContent,
@@ -164,7 +165,7 @@ const EngagementReportDialog = ({
         <DialogHeader>
           <DialogTitle>Active Engagements Report</DialogTitle>
           <DialogDescription>
-            Generated on {format(new Date(), "dd/MM/yyyy")} at{" "}
+            Generated on {format(new Date(), DATE_FORMAT)} at{" "}
             {new Date().toLocaleTimeString()}
           </DialogDescription>
         </DialogHeader>

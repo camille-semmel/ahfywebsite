@@ -119,6 +119,7 @@ nav a {
 
 .store-badge-link {
   display: inline-flex;
+  align-items: center;
 }
 
 .store-badge {
@@ -127,9 +128,6 @@ nav a {
   display: block;
 }
 
-.store-badge--play {
-  height: 53px;
-}
 
 .button {
   background-color: #ff9052;

@@ -114,6 +114,21 @@ nav a {
 .button-group {
   display: flex;
   gap: 1rem;
+  align-items: center;
+}
+
+.store-badge-link {
+  display: inline-flex;
+}
+
+.store-badge {
+  height: 48px;
+  width: auto;
+  display: block;
+}
+
+.store-badge--play {
+  height: 53px;
 }
 
 .button {

@@ -181,7 +181,9 @@ BEGIN
     demo.has_role(auth.uid(), 'owner'::demo.app_role)     OR
     demo.has_role(auth.uid(), 'admin'::demo.app_role)     OR
     demo.has_role(auth.uid(), 'therapist'::demo.app_role) OR
-    demo.has_role(auth.uid(), 'viewer'::demo.app_role)    OR
+    -- Exclude viewer grant when the user is also a house_captain so the
+    -- house restriction is not bypassed by the default viewer role assignment.
+    (demo.has_role(auth.uid(), 'viewer'::demo.app_role) AND NOT demo.has_role(auth.uid(), 'house_captain'::demo.app_role)) OR
     (
       demo.has_role(auth.uid(), 'house_captain'::demo.app_role) AND
       EXISTS (

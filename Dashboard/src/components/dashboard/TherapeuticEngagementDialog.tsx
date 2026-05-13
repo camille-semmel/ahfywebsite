@@ -13,6 +13,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useTherapeuticEngagementGrowth } from "@/lib/services/therapeuticEngagement";
 import { generateTherapeuticEngagementPDF } from "@/lib/pdf/therapeuticEngagementPdf";
 import { toast } from "@/hooks/use-toast";
+import { format } from "date-fns";
+import { DATE_FORMAT } from "@/constants/dates";
 
 interface TherapeuticEngagementDialogProps {
   open: boolean;
@@ -23,7 +25,7 @@ const TherapeuticEngagementDialog = ({
   open,
   onOpenChange,
 }: TherapeuticEngagementDialogProps) => {
-  const { data: engagementGrowth, isLoading } = useTherapeuticEngagementGrowth();
+  const { data: engagementGrowth, isLoading, isError } = useTherapeuticEngagementGrowth();
 
   const handleDownloadPDF = () => {
     if (engagementGrowth) {
@@ -45,7 +47,7 @@ const TherapeuticEngagementDialog = ({
         <DialogHeader>
           <DialogTitle>Therapeutic Engagement Growth Insights</DialogTitle>
           <DialogDescription>
-            Generated on {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}
+            Generated on {format(new Date(), DATE_FORMAT)} at {new Date().toLocaleTimeString()}
           </DialogDescription>
         </DialogHeader>
 
@@ -53,7 +55,15 @@ const TherapeuticEngagementDialog = ({
           <div className="flex items-center justify-center py-12">
             <Loader2 className="w-8 h-8 animate-spin text-primary" />
           </div>
-        ) : engagementGrowth ? (
+        ) : isError ? (
+          <div className="flex items-center justify-center py-12">
+            <p className="text-sm text-muted-foreground">Could not load engagement data. Please try again.</p>
+          </div>
+        ) : engagementGrowth?.weeklyTrend.length === 0 ? (
+          <div className="flex items-center justify-center py-12">
+            <p className="text-sm text-muted-foreground">No engagement data yet</p>
+          </div>
+        ) : (
           <div className="space-y-6" id="printable-content">
             {/* Summary Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -162,10 +172,10 @@ const TherapeuticEngagementDialog = ({
                     {engagementGrowth.weeklyTrend.map((week) => (
                       <TableRow key={week.week_start}>
                         <TableCell className="font-medium">
-                          {new Date(week.week_start).toLocaleDateString()}
+                          {format(new Date(week.week_start), DATE_FORMAT)}
                         </TableCell>
                         <TableCell>
-                          {new Date(week.week_end).toLocaleDateString()}
+                          {format(new Date(week.week_end), DATE_FORMAT)}
                         </TableCell>
                         <TableCell className="text-right font-bold">
                           {week.total_activities}
@@ -189,7 +199,7 @@ const TherapeuticEngagementDialog = ({
               </CardContent>
             </Card>
           </div>
-        ) : null}
+        )}
 
         <DialogFooter className="gap-2 no-print">
           <Button variant="outline" onClick={handlePrint} disabled={isLoading}>

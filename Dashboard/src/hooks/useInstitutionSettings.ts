@@ -19,10 +19,10 @@ export const useInstitutionSettings = () => {
         .schema("public")
         .from("institution_settings")
         .select("*")
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
-      return data as InstitutionSettings;
+      return data as InstitutionSettings | null;
     },
   });
 };

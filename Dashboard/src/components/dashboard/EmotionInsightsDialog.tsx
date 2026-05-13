@@ -21,6 +21,8 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { generateEmotionPDF, EmotionReportData } from "@/lib/pdf/emotionPdf";
+import { format } from "date-fns";
+import { DATE_FORMAT } from "@/constants/dates";
 
 interface EmotionInsightsDialogProps {
   open: boolean;
@@ -119,12 +121,15 @@ const EmotionInsightsDialog = ({
             ? emotionMap.get(emotionId) || "Unknown"
             : "Unknown";
           const studentName = studentMap.get(log.user_id) || "Unknown Student";
+          const normalizedTrigger = log.trigger_detail?.trim();
+          const hasTrigger =
+            !!normalizedTrigger && normalizedTrigger.toLowerCase() !== "null";
 
           return {
             studentName,
             emotion: emotionName,
-            date: new Date(log.created_at).toLocaleDateString(),
-            trigger: log.trigger_detail || "Not specified",
+            date: format(new Date(log.created_at), DATE_FORMAT),
+            trigger: hasTrigger ? normalizedTrigger : "Not specified",
           };
         }) || [];
 
@@ -166,7 +171,7 @@ const EmotionInsightsDialog = ({
         <DialogHeader>
           <DialogTitle>Emotion Distribution Insights</DialogTitle>
           <DialogDescription>
-            Generated on {new Date().toLocaleDateString()} at{" "}
+            Generated on {format(new Date(), DATE_FORMAT)} at{" "}
             {new Date().toLocaleTimeString()}
           </DialogDescription>
         </DialogHeader>

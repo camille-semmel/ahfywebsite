@@ -1,5 +1,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { format } from 'date-fns';
+import { DATE_FORMAT } from '@/constants/dates';
 import { EngagementGrowthData } from '../services/therapeuticEngagement';
 
 export const generateTherapeuticEngagementPDF = (data: EngagementGrowthData) => {
@@ -12,7 +14,7 @@ export const generateTherapeuticEngagementPDF = (data: EngagementGrowthData) => 
   
   doc.setFontSize(10);
   doc.setTextColor(100, 100, 100);
-  doc.text(`Generated: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}`, 105, 28, { align: 'center' });
+  doc.text(`Generated: ${format(new Date(), DATE_FORMAT)} at ${new Date().toLocaleTimeString()}`, 105, 28, { align: 'center' });
   
   // Summary Box
   doc.setFontSize(14);
@@ -62,8 +64,8 @@ export const generateTherapeuticEngagementPDF = (data: EngagementGrowthData) => 
   doc.text('6-Week Trend Analysis', 14, finalY + 15);
   
   const trendData = data.weeklyTrend.map(week => [
-    new Date(week.week_start).toLocaleDateString(),
-    new Date(week.week_end).toLocaleDateString(),
+    format(new Date(week.week_start), DATE_FORMAT),
+    format(new Date(week.week_end), DATE_FORMAT),
     week.total_activities.toString(),
     week.exercise_count.toString(),
     week.journal_count.toString(),

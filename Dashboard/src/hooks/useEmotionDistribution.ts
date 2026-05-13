@@ -12,11 +12,19 @@ export const useEmotionDistribution = (userIds?: string[] | null) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (userIds === undefined) return;
     fetchEmotionData();
-  }, [JSON.stringify(userIds)]);
+  }, [userIds?.join(',')]);
 
   const fetchEmotionData = async () => {
     setIsLoading(true);
+
+    if (userIds && userIds.length === 0) {
+      setData([]);
+      setIsLoading(false);
+      return;
+    }
+
     try {
       let logsQuery = supabase
         .schema("public")

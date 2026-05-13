@@ -16,6 +16,7 @@ STABLE
 SECURITY DEFINER
 SET search_path = demo, public
 AS $$
+  -- Prioritise house_captain so isHouseCaptain is reliable when a user has multiple roles.
   SELECT
     ur.role::text,
     g.name AS house
@@ -23,6 +24,7 @@ AS $$
   LEFT JOIN demo.student_group_relationships sgr ON sgr.user_id = ur.user_id
   LEFT JOIN public.groups g ON g.id = sgr.group_id
   WHERE ur.user_id = auth.uid()
+  ORDER BY (ur.role = 'house_captain') DESC
   LIMIT 1;
 $$;
 
@@ -56,19 +58,25 @@ DECLARE
   v_is_house_captain boolean := FALSE;
   v_caller_group_id  bigint  := NULL;
 BEGIN
-  -- If caller is a house_captain, get their group_id
-  SELECT TRUE, sgr.group_id
-  INTO v_is_house_captain, v_caller_group_id
-  FROM demo.user_roles ur
-  JOIN demo.student_group_relationships sgr ON sgr.user_id = ur.user_id
-  WHERE ur.user_id = auth.uid()
-    AND ur.role = 'house_captain'
-  LIMIT 1;
+  -- Determine role membership from user_roles alone (role presence is authoritative).
+  SELECT EXISTS (
+    SELECT 1 FROM demo.user_roles ur
+    WHERE ur.user_id = auth.uid()
+      AND ur.role = 'house_captain'
+  ) INTO v_is_house_captain;
 
-  -- SELECT INTO sets vars to NULL when no rows found — reset to safe defaults
-  IF NOT FOUND THEN
-    v_is_house_captain := FALSE;
-    v_caller_group_id  := NULL;
+  -- If caller is a house_captain, look up their group separately.
+  IF v_is_house_captain THEN
+    SELECT sgr.group_id
+    INTO v_caller_group_id
+    FROM demo.student_group_relationships sgr
+    WHERE sgr.user_id = auth.uid()
+    LIMIT 1;
+
+    -- Fail closed: a house captain with no group assignment must not see any rows.
+    IF v_caller_group_id IS NULL THEN
+      RETURN;
+    END IF;
   END IF;
 
   RETURN QUERY

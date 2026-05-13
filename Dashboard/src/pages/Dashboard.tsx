@@ -24,7 +24,7 @@ const Dashboard = () => {
   const [showRequestFormDialog, setShowRequestFormDialog] = useState(false);
   const [showEngagementGrowth, setShowEngagementGrowth] = useState(false);
 
-  const { data: roleInfo } = useCurrentUserRole();
+  const { data: roleInfo, isLoading: isLoadingUserRole } = useCurrentUserRole();
 
   // Fetch institution settings for total seats
   const { data: institutionSettings, isLoading: isLoadingSettings } = useInstitutionSettings();
@@ -32,10 +32,12 @@ const Dashboard = () => {
   // Fetch students — auto-filtered by house for house_captain via DB function
   const { data: students, isLoading: isLoadingStudents } = useStudents();
 
-  // Derive student IDs for analytics filtering when user is a house captain
+  // Derive student IDs for analytics filtering when user is a house captain.
+  // undefined = role still loading (hooks will skip fetch); null = no filter.
   const houseStudentIds = roleInfo?.isHouseCaptain
     ? (students?.map((s) => s.user_id).filter(Boolean) as string[]) ?? null
     : null;
+  const analyticsUserIds = isLoadingUserRole ? undefined : houseStudentIds;
 
   // Calculate dynamic seat data
   const usedSeats = students?.length || 0;
@@ -56,8 +58,8 @@ const Dashboard = () => {
     useTherapeuticEngagementGrowth();
 
   // Fetch active engagements and emotion distribution — filtered by house for house captains
-  const { data: engagementData, isLoading: isLoadingEngagements } = useActiveEngagements(houseStudentIds);
-  const { data: emotionData, isLoading: isLoadingEmotions } = useEmotionDistribution(houseStudentIds);
+  const { data: engagementData, isLoading: isLoadingEngagements } = useActiveEngagements(analyticsUserIds);
+  const { data: emotionData, isLoading: isLoadingEmotions } = useEmotionDistribution(analyticsUserIds);
 
     const hasWeeklyTrend = (engagementGrowth?.weeklyTrend?.length ?? 0) > 0;
 

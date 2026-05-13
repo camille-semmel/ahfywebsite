@@ -12,11 +12,19 @@ export const useActiveEngagements = (userIds?: string[] | null) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (userIds === undefined) return;
     fetchEngagementData();
-  }, [JSON.stringify(userIds)]);
+  }, [userIds?.join(',')]);
 
   const fetchEngagementData = async () => {
     setIsLoading(true);
+
+    if (userIds && userIds.length === 0) {
+      setData([]);
+      setIsLoading(false);
+      return;
+    }
+
     try {
       let feedbackQuery = supabase
         .schema("public")

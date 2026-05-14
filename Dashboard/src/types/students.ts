@@ -12,6 +12,6 @@ export interface StudentOverview {
   age?: number;
   gender?: string;
   house?: string;
-  year_level?: number;
+  year_level?: string;
 
 }

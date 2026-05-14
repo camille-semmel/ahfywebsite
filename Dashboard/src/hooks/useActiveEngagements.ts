@@ -7,41 +7,55 @@ export interface EngagementData {
   percentage: number;
 }
 
-export const useActiveEngagements = () => {
+export const useActiveEngagements = (userIds?: string[] | null) => {
   const [data, setData] = useState<EngagementData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (userIds === undefined) return;
     fetchEngagementData();
-  }, []);
+  }, [userIds?.join(',')]);
 
   const fetchEngagementData = async () => {
     setIsLoading(true);
+
+    if (userIds && userIds.length === 0) {
+      setData([]);
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const { data: feedbackData, error: feedbackError } = await supabase
+      let feedbackQuery = supabase
         .schema("public")
         .from("exercise_feedback")
         .select("user_id");
 
+      if (userIds && userIds.length > 0) {
+        feedbackQuery = feedbackQuery.in("user_id", userIds);
+      }
+
+      const { data: feedbackData, error: feedbackError } = await feedbackQuery;
       if (feedbackError) throw feedbackError;
 
-      const { data: emotionData, error: emotionError } = await supabase
+      let emotionQuery = supabase
         .schema("public")
         .from("emotion_usage_logs")
         .select("user_id")
         .eq("is_deleted", false);
 
+      if (userIds && userIds.length > 0) {
+        emotionQuery = emotionQuery.in("user_id", userIds);
+      }
+
+      const { data: emotionData, error: emotionError } = await emotionQuery;
       if (emotionError) throw emotionError;
 
       const therapySessions = feedbackData?.length || 0;
       const selfAssessments = emotionData?.length || 0;
       const resourcesAccessed = therapySessions + selfAssessments;
 
-      const maxValue = Math.max(
-        therapySessions,
-        selfAssessments,
-        resourcesAccessed
-      );
+      const maxValue = Math.max(therapySessions, selfAssessments, resourcesAccessed);
 
       const engagements: EngagementData[] = [
         {
